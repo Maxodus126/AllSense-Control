@@ -1,0 +1,15 @@
+# Build
+bin/
+obj/
+*.user
+*.suo
+
+# Artefak besar (dipasang via GitHub Release, bukan commit)
+*.zip
+*.exe
+
+# Sementara
+*.log
+
+# Repo terpisah (bukan bagian app ini)
+all-sense/
