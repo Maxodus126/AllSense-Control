@@ -170,7 +170,7 @@
                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                                     <Border Padding="9,2" CornerRadius="20" Background="{StaticResource RaisedBrush}"
                                             BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                                        <TextBlock Text="v1.0.0" FontSize="10.5" FontWeight="SemiBold"
+                                        <TextBlock x:Name="VersionChip" Text="v1.0.0" FontSize="10.5" FontWeight="SemiBold"
                                                    Foreground="{StaticResource MutedBrush}"/>
                                     </Border>
                                     <Border x:Name="AcChip" Margin="6,0,0,0" Padding="9,2" CornerRadius="20"
@@ -668,7 +668,7 @@
                                     <StackPanel>
                                         <Grid>
                                             <TextBlock Text="Versi terpasang" FontSize="13"/>
-                                            <TextBlock Text="1.0.0" FontFamily="Consolas" FontSize="12"
+                                            <TextBlock x:Name="InstalledVersion" Text="1.0.0" FontFamily="Consolas" FontSize="12"
                                                        HorizontalAlignment="Right"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Grid>
@@ -727,6 +727,21 @@
                                                       Click="ChkTray_Click"
                                                       ToolTip="Tombol minus menyimpan app ke system tray, bukan taskbar."/>
                                         </Grid>
+                                        <Grid Margin="0,10,0,0">
+                                            <TextBlock Text="Peringatan baterai rendah" FontSize="12.5"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <TextBox x:Name="BatWarn" Width="44" Height="24" FontSize="12"
+                                                         VerticalContentAlignment="Center" FontFamily="Consolas"
+                                                         Background="{StaticResource Panel2Brush}"
+                                                         Foreground="{StaticResource FgBrush}"
+                                                         BorderBrush="{StaticResource LineBrush}"
+                                                         BorderThickness="1" KeyDown="BatWarn_KeyDown"
+                                                         ToolTip="Bubble tray saat % baterai ≤ ambang ini (5–100)"/>
+                                                <TextBlock Text="%" FontSize="11" VerticalAlignment="Center"
+                                                           Margin="4,0,0,0"
+                                                           Foreground="{StaticResource MutedBrush}"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </StackPanel>
                                 </Border>
 
@@ -734,7 +749,7 @@
                                            Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
                                 <Grid Margin="0,0,0,6">
                                     <TextBlock Text="Versi" FontSize="13"/>
-                                    <TextBlock Text="1.0.0" FontFamily="Consolas" FontSize="12"
+                                    <TextBlock x:Name="AboutVersion" Text="1.0.0" FontFamily="Consolas" FontSize="12"
                                                HorizontalAlignment="Right"
                                                Foreground="{StaticResource MutedBrush}"/>
                                 </Grid>

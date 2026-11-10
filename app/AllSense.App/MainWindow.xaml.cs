@@ -63,6 +63,9 @@ public partial class MainWindow : Window
         // memicu ValueChanged yang menulis hardware bila guard belum aktif.
         _suppressApply = true;
         InitializeComponent();
+        VersionChip.Text = "v" + Updater.CurrentVersion;
+        AboutVersion.Text = Updater.CurrentVersion;
+        InstalledVersion.Text = Updater.CurrentVersion;
         DockRight();
 
         _mode = ParseMode(_settings.PowerMode);
@@ -391,6 +394,23 @@ public partial class MainWindow : Window
         ChkAutoBat.IsChecked = _settings.AutoPowerOnBattery;
         ChkStartup.IsChecked = _settings.RunAtStartup;
         ChkTray.IsChecked = _settings.TrayMode;
+        BatWarn.Text = _settings.LowBatteryThreshold.ToString();
+    }
+
+    private void BatWarn_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter) return;
+        var ok = int.TryParse(BatWarn.Text.Trim(), out var v) && v >= 5 && v <= 100;
+        if (ok)
+        {
+            _settings.LowBatteryThreshold = v;
+            _settings.Save();
+            UpStatus.Text = $"Ambang baterai: {v}%";
+        }
+        else
+        {
+            BatWarn.Text = _settings.LowBatteryThreshold.ToString();
+        }
     }
 
     private void ChkAutoBat_Click(object sender, RoutedEventArgs e)
@@ -410,8 +430,15 @@ public partial class MainWindow : Window
     {
         _settings.TrayMode = ChkTray.IsChecked == true;
         _settings.Save();
-        if (_settings.TrayMode) EnsureTray();
-        else if (_tray is not null) { _tray.Dispose(); _tray = null; }
+        if (_settings.TrayMode)
+        {
+            EnsureTray();
+        }
+        else
+        {
+            if (_tray is not null) { _tray.Dispose(); _tray = null; }
+            if (Visibility != Visibility.Visible) { Show(); DockRight(); }
+        }
     }
     private void MinBtn_Click(object sender, RoutedEventArgs e)
     {
