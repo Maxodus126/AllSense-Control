@@ -14,7 +14,7 @@ public sealed record UpdateInfo(string Version, string Url);
 /// </summary>
 public static class Updater
 {
-    public const string CurrentVersion = "1.0.2";
+    public const string CurrentVersion = "1.0.3";
     private const string Repo = "Maxodus126/AllSense-Control";
     private const string LatestUrl = $"https://api.github.com/repos/{Repo}/releases/latest";
 
@@ -42,9 +42,9 @@ public static class Updater
                 foreach (var a in assets.EnumerateArray())
                 {
                     var name = a.TryGetProperty("name", out var ne) ? ne.GetString() : null;
+                    // Payload update = AllSense.exe (bukan installer AllSense.setup.exe).
                     if (name is not null &&
-                        name.StartsWith("AllSense", StringComparison.OrdinalIgnoreCase) &&
-                        name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) &&
+                        name.Equals("AllSense.exe", StringComparison.OrdinalIgnoreCase) &&
                         a.TryGetProperty("browser_download_url", out var ue))
                         return new UpdateInfo(version, ue.GetString()!);
                 }
