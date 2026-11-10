@@ -28,8 +28,8 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path bundle | Out-Null
-          Copy-Item publish\installer\AllSenseSetup.exe bundle\AllSense setup.exe
-          Copy-Item publish\app\AllSense.exe bundle\AllSense.exe
+          Copy-Item publish\installer\AllSenseSetup.exe "bundle\AllSense setup.exe"
+          Copy-Item publish\app\AllSense.exe "bundle\AllSense.exe"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
