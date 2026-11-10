@@ -6,8 +6,13 @@
 
 <img src="https://img.shields.io/github/v/release/Maxodus126/AllSense-Control?style=for-the-badge&label=RILIS&color=FF4356&logo=github" alt="Rilis"/>&nbsp;
 <img src="https://img.shields.io/github/actions/workflow/status/Maxodus126/AllSense-Control/build.yml?branch=main&style=for-the-badge&label=CI&color=35C973" alt="CI"/>&nbsp;
+<img src="https://img.shields.io/github/stars/Maxodus126/AllSense-Control?style=for-the-badge&label=STARS&color=D9A013&logo=github&logoColor=white" alt="Stars"/>&nbsp;
 <img src="https://img.shields.io/badge/.NET%2010-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/>&nbsp;
 <img src="https://img.shields.io/badge/Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11"/>
+
+<br/><br/>
+
+<img src="docs/preview-panel.svg" alt="Pratinjau panel AllSense Control" width="780">
 
 <br/>
 
@@ -53,6 +58,21 @@ Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul �
 
 ---
 
+## 📊 Kenapa bukan "bloatware" vendor?
+
+Banyak laptop hadir dengan app vendor (Armoury Crate, Vantage, OMEN, …) yang berat, selalu nongol, dan terkunci ke satu merek. AllSense Control menawarkan **subset penting yang sama** — tapi universal & minimalis.
+
+| | **AllSense Control** | App vendor |
+|---|---|---|
+| 🌍 Kompatibilitas | Semua merek | Hanya mereknya |
+| ⚖️ Lisensi | Gratis & ringan | Free, tapi berat |
+| 🚫 Admin | Tidak perlu | Sering perlu |
+| 🧹 Residue | Satu panel kecil | Background service & updater |
+| 🔓 Terbuka | Sumber terbuka | Tertutup |
+| 🔄 Update | Otomatis via GitHub | Wajib akun |
+
+---
+
 ## ⌨️ Hotkey bawaan
 
 | Kombinasi | Aksi |
@@ -84,11 +104,12 @@ Yang vendor-specific (fan curve, GPU mux, undervolt, RGB) sengaja **tidak** dise
 
 ## 🖥️ Tampilan
 
-| Panel / OSD | Demo interaktif |
+| Pratinjau | Demo interaktif |
 |---|---|
-| [Situs produk](https://maxodus126.github.io/AllSense-Control/) | [app-demo.html](docs/app-demo.html) |
+| [preview-panel.svg](docs/preview-panel.svg) | [app-demo.html](docs/app-demo.html) |
+| [Situs produk](https://maxodus126.github.io/AllSense-Control/) | — |
 
-*Screenshot statis menyusul. OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode.*
+OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode daya.
 
 ---
 
