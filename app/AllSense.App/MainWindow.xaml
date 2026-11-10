@@ -744,6 +744,12 @@
                                                HorizontalAlignment="Right"
                                                Foreground="{StaticResource MutedBrush}"/>
                                 </Grid>
+                                <Grid Margin="0,0,0,6" x:Name="HealthRow">
+                                    <TextBlock Text="Kesehatan baterai" FontSize="13"/>
+                                    <TextBlock x:Name="HealthLbl" Text="…" FontFamily="Consolas" FontSize="12"
+                                               HorizontalAlignment="Right"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Grid>
                                 <Grid>
                                     <TextBlock Text="Selftest" FontSize="13"/>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
