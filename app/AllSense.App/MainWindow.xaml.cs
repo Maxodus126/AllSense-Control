@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
@@ -26,6 +27,7 @@ public partial class MainWindow : Window
     private IntPtr _hWnd;
     private int _awaitingHotKey;
     private TrayIcon? _tray;
+    private EventWaitHandle? _wake;
     private bool _wasOnAc = NativeInterop.GetPowerStatus().onAc;
     private PowerMode? _restoreOnAc;
     private bool _batteryWarned;
@@ -96,9 +98,10 @@ public partial class MainWindow : Window
         _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _timer.Tick += (_, _) =>
         {
-            // Idle ringan: saat window disembunyikan, stop polling.
-            if (Visibility != Visibility.Visible) return;
+            // Baterai wajib selalu dicek (peringatan rendah tetap aktif walau window di-tray).
             RefreshBattery();
+            // Idle ringan: polling hardware (WMI) hanya saat window terlihat.
+            if (Visibility != Visibility.Visible) return;
             RefreshHardwareState();
         };
         _timer.Start();
@@ -114,7 +117,32 @@ public partial class MainWindow : Window
             src.AddHook(WndProc);
             UpdateBehaviorUI();
             _ = AutoCheckUpdate();
+
+            // Bangunkan dari instance kedua (double-click exe/launcher) walau window di-tray.
+            _wake = new EventWaitHandle(false, EventResetMode.AutoReset, "AllSense.ShowWindow");
+            new Thread(() =>
+            {
+                try { while (_wake.WaitOne()) Dispatcher.Invoke(WakeShow); }
+                catch { }
+            }) { IsBackground = true }.Start();
         };
+    }
+
+    private void WakeShow()
+    {
+        if (Visibility == Visibility.Visible)
+        {
+            Activate();
+            Topmost = true;
+            Topmost = false;
+        }
+        else
+        {
+            Show();
+            DockRight();
+            RefreshBattery();
+            RefreshHardwareState();
+        }
     }
 
     // ---------- mode ----------
@@ -720,6 +748,7 @@ public partial class MainWindow : Window
         NativeInterop.UnregisterHotKey(h, 1);
         NativeInterop.UnregisterHotKey(h, 2);
         SystemEvents.PowerModeChanged -= OnPowerModeChanged;
+        _wake?.Dispose();
         if (_tray is not null) { _tray.Dispose(); _tray = null; }
         _osd.Close();
         base.OnClosed(e);

@@ -42,6 +42,15 @@ public partial class App : System.Windows.Application
 
     private static void ActivateExisting()
     {
+        // Sinyaikan event: instance pertama akan menampilkan window walau berada di tray.
+        try
+        {
+            using var evt = EventWaitHandle.OpenExisting("AllSense.ShowWindow");
+            evt.Set();
+            return;
+        }
+        catch { }
+        // Fallback: cari window terlihat.
         try
         {
             foreach (var p in Process.GetProcessesByName("AllSense"))

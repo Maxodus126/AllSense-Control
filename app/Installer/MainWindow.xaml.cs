@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -33,7 +34,7 @@ public partial class MainWindow : Window
             PathBox.Text = dlg.FolderName;
     }
 
-    private async void Install_Click(object sender, RoutedEventArgs e)
+    private void Install_Click(object sender, RoutedEventArgs e)
     {
         var dest = PathBox.Text.Trim();
         if (dest.Length == 0)
@@ -41,7 +42,21 @@ public partial class MainWindow : Window
             Status.Text = "Pilih lokasi instalasi dulu.";
             return;
         }
+        ConfirmPath.Text = dest;
+        ConfirmOverlay.Visibility = Visibility.Visible;
+    }
 
+    private void CancelConfirm_Click(object sender, RoutedEventArgs e) =>
+        ConfirmOverlay.Visibility = Visibility.Collapsed;
+
+    private async void GoInstall_Click(object sender, RoutedEventArgs e)
+    {
+        ConfirmOverlay.Visibility = Visibility.Collapsed;
+        await DoInstall(PathBox.Text.Trim());
+    }
+
+    private async Task DoInstall(string dest)
+    {
         InstallBtn.IsEnabled = false;
         Progress.Visibility = Visibility.Visible;
         Progress.Value = 0;

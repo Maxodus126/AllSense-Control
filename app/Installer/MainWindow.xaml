@@ -6,6 +6,43 @@
         Background="{StaticResource BgBrush}" Foreground="{StaticResource FgBrush}"
         FontFamily="Segoe UI" FontSize="13">
 
+    <Window.Resources>
+        <Style x:Key="BtnBase" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="9"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF1E242F"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="BtnPrimary" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+
     <StackPanel Margin="28,26,28,26">
 
         <Grid Margin="0,0,0,6">
@@ -20,7 +57,7 @@
             </Border>
             <StackPanel Margin="68,0,0,0" VerticalAlignment="Center">
                 <TextBlock Text="AllSense Control" FontSize="21" FontWeight="Bold"/>
-                <TextBlock Text="Setup · v1.0.0 · oleh Maxodus" FontSize="11"
+                <TextBlock Text="Setup · v1.0.1 · oleh Maxodus" FontSize="11"
                            Foreground="{StaticResource MutedBrush}" Margin="0,2,0,0"/>
             </StackPanel>
         </Grid>
@@ -84,23 +121,59 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="TryRun" Content="Jalankan sekarang" Visibility="Collapsed"
-                    Click="Run_Click" Cursor="Hand" Height="38" Padding="18,0"
+                    Click="Run_Click" Style="{StaticResource BtnBase}" Padding="18,0"
                     Background="{StaticResource Panel2Brush}"
-                    BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
+                    BorderBrush="{StaticResource LineBrush}"
                     Foreground="{StaticResource FgBrush}"/>
             <Button Grid.Column="1" x:Name="CloseBtn" Content="Tutup" Visibility="Collapsed"
-                    Click="Close_Click" Cursor="Hand" Height="38" Padding="18,0"
+                    Click="Close_Click" Style="{StaticResource BtnBase}" Padding="18,0"
                     Background="{StaticResource Panel2Brush}"
-                    BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
+                    BorderBrush="{StaticResource LineBrush}"
                     Foreground="{StaticResource FgBrush}" Margin="0,0,8,0"/>
-            <Button Grid.Column="2" x:Name="InstallBtn" Content="Install" Height="38" Padding="26,0"
-                    Click="Install_Click" Cursor="Hand"
-                    Background="{StaticResource AccentBrush}" Foreground="White"
-                    FontWeight="SemiBold" BorderThickness="0"/>
+            <Button Grid.Column="2" x:Name="InstallBtn" Content="Install" Padding="26,0"
+                    Click="Install_Click" Style="{StaticResource BtnPrimary}"/>
         </Grid>
 
         <TextBlock Text="Universal · bertenaga daya Windows · tanpa driver vendor"
                    FontSize="10.5" Foreground="{StaticResource DimBrush}"
                    HorizontalAlignment="Center" Margin="0,16,0,0"/>
+
+        <!-- Overlay konfirmasi (menu pemberitahuan sebelum install) -->
+        <Grid x:Name="ConfirmOverlay" Margin="-28,-26,-28,-26"
+              Background="#99070A10" Visibility="Collapsed">
+            <Border Width="400" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}"
+                    BorderThickness="1" CornerRadius="14" Padding="22">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox Width="18" Height="18" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Path Data="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"
+                                  Stroke="{StaticResource AccentBrush}" StrokeThickness="1.6" Fill="#00000000"/>
+                        </Viewbox>
+                        <TextBlock Text="Konfirmasi pemasangan" FontSize="16" FontWeight="Bold"/>
+                    </StackPanel>
+                    <TextBlock Text="AllSense Control akan dipasang ke:" FontSize="11.5"
+                               Foreground="{StaticResource MutedBrush}" Margin="0,14,0,4"/>
+                    <Border Background="{StaticResource Panel2Brush}" CornerRadius="8" Padding="12,9">
+                        <TextBlock x:Name="ConfirmPath" FontFamily="Consolas" FontSize="11.5"
+                                   Foreground="{StaticResource FgBrush}" TextWrapping="Wrap"/>
+                    </Border>
+                    <TextBlock Text="Pintasan akan dibuat di Desktop dan Start Menu."
+                               FontSize="11.5" Foreground="{StaticResource MutedBrush}"
+                               Margin="0,10,0,0"/>
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="Batal" Style="{StaticResource BtnBase}"
+                                Background="{StaticResource Panel2Brush}" Foreground="{StaticResource FgBrush}"
+                                BorderBrush="{StaticResource LineBrush}" Click="CancelConfirm_Click"/>
+                        <Button Grid.Column="1" Content="Lanjutkan" Style="{StaticResource BtnPrimary}"
+                                Margin="10,0,0,0" Click="GoInstall_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
     </StackPanel>
 </Window>
