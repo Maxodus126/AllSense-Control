@@ -136,6 +136,42 @@
             </Setter>
         </Style>
 
+        <!-- tombol mute ikon (kompak) -->
+        <Style x:Key="MuteBtn" TargetType="ToggleButton">
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="bd" CornerRadius="8" Background="#FF1A1E28"
+                                BorderBrush="#12FFFFFF" BorderThickness="1">
+                            <Grid>
+                                <Viewbox Width="13" Height="13">
+                                    <Path x:Name="spk" Data="{StaticResource gSpeaker}"
+                                          Style="{StaticResource Ic}" Stroke="{StaticResource MutedBrush}"/>
+                                </Viewbox>
+                                <Path x:Name="slash" Data="M3.5 3.5L20.5 20.5"
+                                      Stroke="#FFFF4356" StrokeThickness="2.2" Opacity="0"
+                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="slash" Property="Opacity" Value="1"/>
+                                <Setter TargetName="spk" Property="Stroke" Value="#FFFF4356"/>
+                                <Setter TargetName="bd" Property="Background" Value="#26FF4356"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#52FF4356"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#FF1C212D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
     <!-- shell jendela: radius 22 + shadow -->
     <Border CornerRadius="22" BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
@@ -430,57 +466,69 @@
                                 </Grid>
 
                                 <StackPanel>
-                                    <Grid Margin="0,0,0,2">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <Viewbox Width="15" Height="15" Margin="0,0,8,0">
-                                                <Path Data="{StaticResource gSun}" Style="{StaticResource Ic}"
-                                                      Stroke="{StaticResource DimBrush}"/>
-                                            </Viewbox>
-                                            <TextBlock Text="Brightness" FontSize="12.5" FontWeight="SemiBold"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="BrightVal" Text="75" FontSize="22" FontWeight="SemiBold"
-                                                       FontFamily="Consolas" Foreground="{StaticResource FgBrush}"/>
-                                            <TextBlock Text="%" FontSize="11" Margin="2,6,0,0"
+                                    <!-- Brightness — satu baris -->
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Viewbox Grid.Column="0" Width="15" Height="15" Margin="0,0,8,0"
+                                                 VerticalAlignment="Center">
+                                            <Path Data="{StaticResource gSun}" Style="{StaticResource Ic}"
+                                                  Stroke="{StaticResource DimBrush}"/>
+                                        </Viewbox>
+                                        <TextBlock Grid.Column="1" Text="Brightness" FontSize="12"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource MutedBrush}"/>
+                                        <Slider Grid.Column="2" x:Name="BrightSlider"
+                                                Style="{StaticResource SliderBase}" Margin="10,0,10,0"
+                                                VerticalAlignment="Center"
+                                                Tag="#FFFFB020" Minimum="10" Maximum="100"
+                                                ValueChanged="BrightSlider_ValueChanged"/>
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="BrightVal" Text="75" FontSize="13"
+                                                       FontWeight="SemiBold" FontFamily="Consolas"
+                                                       Foreground="{StaticResource FgBrush}"/>
+                                            <TextBlock Text="%" FontSize="10" Margin="1,2,0,0"
                                                        Foreground="{StaticResource DimBrush}"/>
                                         </StackPanel>
                                     </Grid>
-                                    <Slider x:Name="BrightSlider" Style="{StaticResource SliderBase}"
-                                            Tag="#FFFFB020" Minimum="10" Maximum="100"
-                                            ValueChanged="BrightSlider_ValueChanged"/>
 
-                                    <Border Margin="0,6,0,0" Padding="0,12,0,0"
-                                            BorderBrush="#0EFFFFFF" BorderThickness="0,1,0,0">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,2">
-                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                    <Viewbox Width="15" Height="15" Margin="0,0,8,0">
-                                                        <Path Data="{StaticResource gSpeaker}" Style="{StaticResource Ic}"
-                                                              Stroke="{StaticResource DimBrush}"/>
-                                                    </Viewbox>
-                                                    <TextBlock Text="Volume" FontSize="12.5" FontWeight="SemiBold"
-                                                               Foreground="{StaticResource MutedBrush}"/>
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                    <TextBlock x:Name="VolVal" Text="65" FontSize="22" FontWeight="SemiBold"
-                                                               FontFamily="Consolas" Foreground="{StaticResource FgBrush}"/>
-                                                    <TextBlock Text="%" FontSize="11" Margin="2,6,0,0"
-                                                               Foreground="{StaticResource DimBrush}"/>
-                                                </StackPanel>
-                                            </Grid>
-                                            <Slider x:Name="VolSlider" Style="{StaticResource SliderBase}"
-                                                    Tag="#FFFF4356" Minimum="0" Maximum="100"
-                                                    ValueChanged="VolSlider_ValueChanged"/>
-                                            <Grid Margin="0,6,0,0">
-                                                <TextBlock Text="Mute" FontSize="12.5" FontWeight="SemiBold"
-                                                           Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
-                                                <ToggleButton x:Name="MuteTog" Style="{StaticResource Switch}"
-                                                              HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                              Click="Mute_Changed"/>
-                                            </Grid>
+                                    <!-- Volume — satu baris + mute ikon -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Viewbox Grid.Column="0" Width="15" Height="15" Margin="0,0,8,0"
+                                                 VerticalAlignment="Center">
+                                            <Path Data="{StaticResource gSpeaker}" Style="{StaticResource Ic}"
+                                                  Stroke="{StaticResource DimBrush}"/>
+                                        </Viewbox>
+                                        <TextBlock Grid.Column="1" Text="Volume" FontSize="12"
+                                                   FontWeight="SemiBold" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource MutedBrush}"/>
+                                        <ToggleButton Grid.Column="2" x:Name="MuteTog"
+                                                      Style="{StaticResource MuteBtn}" Margin="10,0,0,0"
+                                                      VerticalAlignment="Center" Click="Mute_Changed"/>
+                                        <Slider Grid.Column="3" x:Name="VolSlider"
+                                                Style="{StaticResource SliderBase}" Margin="10,0,10,0"
+                                                VerticalAlignment="Center"
+                                                Tag="#FFFF4356" Minimum="0" Maximum="100"
+                                                ValueChanged="VolSlider_ValueChanged"/>
+                                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="VolVal" Text="65" FontSize="13"
+                                                       FontWeight="SemiBold" FontFamily="Consolas"
+                                                       Foreground="{StaticResource FgBrush}"/>
+                                            <TextBlock Text="%" FontSize="10" Margin="1,2,0,0"
+                                                       Foreground="{StaticResource DimBrush}"/>
                                         </StackPanel>
-                                    </Border>
+                                    </Grid>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
