@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -24,6 +25,10 @@ public partial class MainWindow : Window
     private bool _suppressApply;
     private IntPtr _hWnd;
     private int _awaitingHotKey;
+    private TrayIcon? _tray;
+    private bool _wasOnAc = NativeInterop.GetPowerStatus().onAc;
+    private PowerMode? _restoreOnAc;
+    private bool _batteryWarned;
 
     private static readonly (int Mods, int Vk)[] ToggleFallback =
     {
@@ -96,6 +101,7 @@ public partial class MainWindow : Window
         _timer.Start();
         RefreshBattery();
         RefreshHardwareState();
+        InitSystemFeatures();
 
         Loaded += (_, _) =>
         {
@@ -103,6 +109,7 @@ public partial class MainWindow : Window
             ApplyHotkeyBindings();
             var src = (HwndSource)PresentationSource.FromVisual(this)!;
             src.AddHook(WndProc);
+            UpdateBehaviorUI();
             _ = AutoCheckUpdate();
         };
     }
@@ -119,12 +126,86 @@ public partial class MainWindow : Window
     {
         var next = ParseMode((string)((Border)sender).Tag);
         if (next == _mode) return;
-        _mode = next;
-        _settings.PowerMode = next.ToString();
+        SetMode(next, manual: true);
+    }
+
+    /// <summary>Satu pintu keluar untuk ganti mode + simpan + visual + OSD.</summary>
+    private void SetMode(PowerMode m, bool manual = false)
+    {
+        _mode = m;
+        _settings.PowerMode = m.ToString();
         _settings.Save();
         ApplyModeVisual();
-        PowerControl.Apply(next);
-        _osd.Show(next);
+        PowerControl.Apply(m);
+        _osd.Show(m);
+        if (manual && !NativeInterop.GetPowerStatus().onAc)
+            _restoreOnAc = null; // pilihan manual di baterai mengalahkan auto-restore
+    }
+
+    // ---------- tray / sistem ----------
+    private void InitSystemFeatures()
+    {
+        if (_settings.TrayMode) EnsureTray();
+        SystemEvents.PowerModeChanged += OnPowerModeChanged;
+        ApplyStartupRun();
+    }
+
+    private void EnsureTray()
+    {
+        if (_tray is not null) return;
+        _tray = new TrayIcon
+        {
+            ToggleWindow = () => Dispatcher.Invoke(ToggleWindow),
+            CycleMode = () => Dispatcher.Invoke(CycleMode),
+            ExitApp = () => Dispatcher.Invoke(Close),
+        };
+    }
+
+    private void ToggleWindow()
+    {
+        if (Visibility == Visibility.Visible) Hide();
+        else { Show(); DockRight(); RefreshBattery(); RefreshHardwareState(); }
+    }
+
+    private void CycleMode() => SetMode((PowerMode)(((int)_mode + 1) % 3), manual: true);
+
+    private void OnPowerModeChanged(object? sender, PowerModeChangedEventArgs e)
+    {
+        // Transisi AC <-> baterai. Hanya bertindak bila opsi aktif.
+        var (ac, _) = NativeInterop.GetPowerStatus();
+        if (ac == _wasOnAc) return;
+        _wasOnAc = ac;
+        if (!_settings.AutoPowerOnBattery) return;
+
+        if (!ac)
+        {
+            if (_mode != PowerMode.Efficiency)
+            {
+                _restoreOnAc = _mode;
+                SetMode(PowerMode.Efficiency);
+            }
+        }
+        else if (_restoreOnAc.HasValue)
+        {
+            var restore = _restoreOnAc.Value;
+            _restoreOnAc = null;
+            SetMode(restore);
+        }
+    }
+
+    private void ApplyStartupRun()
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Run", writable: true);
+            const string name = "AllSenseControl";
+            if (_settings.RunAtStartup && Environment.ProcessPath is { } exe)
+                key?.SetValue(name, "\"" + exe + "\"");
+            else
+                key?.DeleteValue(name, throwOnMissingValue: false);
+        }
+        catch { }
     }
 
     private void ApplyModeVisual()
@@ -199,10 +280,22 @@ public partial class MainWindow : Window
         AcChip.Background = ac ? Soft(Green) : Panel2;
         AcChip.BorderBrush = ac ? LineGreen() : Line;
         AcText.Foreground = ac ? Green : Muted;
-        AcText.Text = ac ? "AC" : "BAT";
-        if (pct < 0) { BatteryText.Text = "—"; return; }
-        BatteryText.Text = $"{pct}% · {(ac ? "AC" : "BAT")}";
-        AcText.Text = $"{(ac ? "AC" : "BAT")} · {pct}%";
+        if (pct >= 0) BatteryText.Text = $"{pct}% · {(ac ? "AC" : "BAT")}";
+        AcText.Text = $"{(ac ? "AC" : "BAT")} · {(pct >= 0 ? pct + "%" : "—")}";
+
+        CheckLowBattery(ac, pct);
+    }
+
+    private void CheckLowBattery(bool ac, int pct)
+    {
+        if (ac || pct < 0 || pct > _settings.LowBatteryThreshold)
+        {
+            _batteryWarned = false;
+            return;
+        }
+        if (_batteryWarned) return;
+        _batteryWarned = true;
+        _tray?.Balloon("Baterai rendah", $"{pct}% tersisa. Colokkan charger.");
     }
 
     // ---------- sinkronkan slider dengan perubahan hardware eksternal (Fn/OS) ----------
@@ -291,7 +384,40 @@ public partial class MainWindow : Window
     private void SettingsBtn_Click(object sender, RoutedEventArgs e) => Overlay.Visibility = Visibility.Visible;
     private void SheetClose_Click(object sender, RoutedEventArgs e) => Overlay.Visibility = Visibility.Collapsed;
     private void Overlay_Click(object sender, MouseButtonEventArgs e) => Overlay.Visibility = Visibility.Collapsed;
-    private void MinBtn_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    // ---------- pengaturan perilaku sistem ----------
+    private void UpdateBehaviorUI()
+    {
+        ChkAutoBat.IsChecked = _settings.AutoPowerOnBattery;
+        ChkStartup.IsChecked = _settings.RunAtStartup;
+        ChkTray.IsChecked = _settings.TrayMode;
+    }
+
+    private void ChkAutoBat_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.AutoPowerOnBattery = ChkAutoBat.IsChecked == true;
+        _settings.Save();
+    }
+
+    private void ChkStartup_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.RunAtStartup = ChkStartup.IsChecked == true;
+        _settings.Save();
+        ApplyStartupRun();
+    }
+
+    private void ChkTray_Click(object sender, RoutedEventArgs e)
+    {
+        _settings.TrayMode = ChkTray.IsChecked == true;
+        _settings.Save();
+        if (_settings.TrayMode) EnsureTray();
+        else if (_tray is not null) { _tray.Dispose(); _tray = null; }
+    }
+    private void MinBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (_tray is not null) Hide();
+        else WindowState = WindowState.Minimized;
+    }
     private void HeaderClose_Click(object sender, RoutedEventArgs e) => Close();
     private void ExitBtn_Click(object sender, MouseButtonEventArgs e) => Close();
 
@@ -388,25 +514,12 @@ public partial class MainWindow : Window
         {
             if (wParam.ToInt32() == 1)
             {
-                if (Visibility == Visibility.Visible)
-                {
-                    Hide();
-                }
-                else
-                {
-                    Show(); DockRight();
-                    RefreshBattery(); RefreshHardwareState(); // langsung segarkan saat tampil
-                }
+                ToggleWindow();
                 handled = true;
             }
             else if (wParam.ToInt32() == 2)
             {
-                _mode = (PowerMode)(((int)_mode + 1) % 3);
-                _settings.PowerMode = _mode.ToString();
-                _settings.Save();
-                ApplyModeVisual();
-                PowerControl.Apply(_mode);
-                _osd.Show(_mode);
+                CycleMode();
                 handled = true;
             }
         }
@@ -577,6 +690,8 @@ public partial class MainWindow : Window
         var h = new WindowInteropHelper(this).Handle;
         NativeInterop.UnregisterHotKey(h, 1);
         NativeInterop.UnregisterHotKey(h, 2);
+        SystemEvents.PowerModeChanged -= OnPowerModeChanged;
+        if (_tray is not null) { _tray.Dispose(); _tray = null; }
         _osd.Close();
         base.OnClosed(e);
     }

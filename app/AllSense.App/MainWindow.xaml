@@ -698,6 +698,38 @@
                                     </StackPanel>
                                 </Border>
 
+                                <TextBlock Text="SISTEM" FontSize="10" FontWeight="Bold"
+                                           Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
+                                <Border Padding="10,10" CornerRadius="9"
+                                        Background="{StaticResource RaisedBrush}" Margin="0,0,0,18">
+                                    <StackPanel>
+                                        <Grid>
+                                            <TextBlock Text="Otomatis hemat daya saat baterai" FontSize="12.5"
+                                                       TextWrapping="Wrap" Margin="0,0,28,0"/>
+                                            <CheckBox x:Name="ChkAutoBat" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                      Click="ChkAutoBat_Click"
+                                                      ToolTip="Saat colokan dicabut: pindah otomatis ke HEMAT. Saat dicolok ulang: pulihkan mode semula."/>
+                                        </Grid>
+                                        <TextBlock Text="Seimbang untuk baterai, tanpa perlu atur manual."
+                                                   FontSize="9.5" Foreground="{StaticResource DimBrush}"
+                                                   Margin="0,4,0,10"/>
+                                        <Grid>
+                                            <TextBlock Text="Jalankan saat startup Windows" FontSize="12.5"/>
+                                            <CheckBox x:Name="ChkStartup" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                      Click="ChkStartup_Click"/>
+                                        </Grid>
+                                        <TextBlock Text="Hotkey global tetap aktif walau window disembunyikan."
+                                                   FontSize="9.5" Foreground="{StaticResource DimBrush}"
+                                                   Margin="0,4,0,10"/>
+                                        <Grid>
+                                            <TextBlock Text="Minimalkan ke tray" FontSize="12.5"/>
+                                            <CheckBox x:Name="ChkTray" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                      Click="ChkTray_Click"
+                                                      ToolTip="Tombol minus menyimpan app ke system tray, bukan taskbar."/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
                                 <TextBlock Text="ABOUT" FontSize="10" FontWeight="Bold"
                                            Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
                                 <Grid Margin="0,0,0,6">

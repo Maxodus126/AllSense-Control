@@ -9,6 +9,10 @@ public sealed class UserSettings
     public int Brightness { get; set; } = 75;
     public int Volume { get; set; } = 65;
     public bool Mute { get; set; }
+    public bool TrayMode { get; set; } = true;
+    public bool AutoPowerOnBattery { get; set; } = true;
+    public bool RunAtStartup { get; set; }
+    public int LowBatteryThreshold { get; set; } = 20;
     public string UpdateUrl { get; set; } = "";
     public string HotkeyToggle { get; set; } = "Ctrl+Alt+A";
     public string HotkeyCycle { get; set; } = "Ctrl+Alt+M";
