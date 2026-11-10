@@ -357,7 +357,8 @@ public partial class MainWindow : Window
     // ---------- sliders ----------
     private void BrightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        BrightVal.Text = ((int)e.NewValue).ToString();
+        if (BrightVal != null)
+            BrightVal.Text = ((int)e.NewValue).ToString();
         if (_suppressApply) return;
         if (BrightnessControl.CanSet)
             BrightnessControl.Set((int)e.NewValue);
@@ -367,7 +368,8 @@ public partial class MainWindow : Window
 
     private void VolSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        VolVal.Text = ((int)e.NewValue).ToString();
+        if (VolVal != null)
+            VolVal.Text = ((int)e.NewValue).ToString();
         if (_suppressApply) return;
         VolumeControl.SetLevel((float)(e.NewValue / 100d));
         _settings.Volume = (int)e.NewValue;
