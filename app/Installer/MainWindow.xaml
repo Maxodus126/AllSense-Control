@@ -57,7 +57,7 @@
             </Border>
             <StackPanel Margin="68,0,0,0" VerticalAlignment="Center">
                 <TextBlock Text="AllSense Control" FontSize="21" FontWeight="Bold"/>
-                <TextBlock Text="Setup · v1.0.3 · oleh Maxodus" FontSize="11"
+                <TextBlock Text="Setup · v1.0.4 · oleh Maxodus" FontSize="11"
                            Foreground="{StaticResource MutedBrush}" Margin="0,2,0,0"/>
             </StackPanel>
         </Grid>
