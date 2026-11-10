@@ -2,7 +2,6 @@ using NAudio.CoreAudioApi;
 
 namespace AllSense;
 
-/// <summary>Volume sistem via CoreAudio (IAudioEndpointVolume).</summary>
 public static class VolumeControl
 {
     private static readonly MMDeviceEnumerator Enumerator = new();

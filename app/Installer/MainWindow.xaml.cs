@@ -1,109 +1,99 @@
+using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using Microsoft.Win32;
 
-namespace AllSense.Installer;
+namespace AllSenseSetup;
 
-public partial class MainWindow : System.Windows.Window
+public partial class MainWindow : Window
 {
-    private const string AppVersion = "1.0.0";
-    private bool _done;
+    private const string ExeName = "AllSense.exe";
 
     public MainWindow()
     {
         InitializeComponent();
-        string installDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AllSense");
-        LocText.Text = Path.Combine(installDir, "AllSense.exe");
+        PathBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AllSense");
+        if (!File.Exists(PayloadPath))
+            Status.Text = "Tidak menemukan AllSense.exe di samping installer.";
+        UpdateInstallState();
     }
 
-    private async void InstallBtn_Click(object sender, System.Windows.RoutedEventArgs e)
+    private void UpdateInstallState() =>
+        InstallBtn.IsEnabled = File.Exists(PayloadPath) && LicenseCheck.IsChecked == true;
+
+    private void License_Changed(object sender, RoutedEventArgs e) => UpdateInstallState();
+
+    private string PayloadPath =>
+        Path.Combine(Path.GetDirectoryName(Environment.ProcessPath)!, ExeName);
+
+    private void Browse_Click(object sender, RoutedEventArgs e)
     {
+        var dlg = new OpenFolderDialog { Title = "Pilih lokasi instalasi" };
+        if (dlg.ShowDialog(this) == true)
+            PathBox.Text = dlg.FolderName;
+    }
+
+    private async void Install_Click(object sender, RoutedEventArgs e)
+    {
+        var dest = PathBox.Text.Trim();
+        if (dest.Length == 0)
+        {
+            Status.Text = "Pilih lokasi instalasi dulu.";
+            return;
+        }
+
         InstallBtn.IsEnabled = false;
-        StatusText.Text = "Menginstal…";
-
-        string payload = Path.Combine(AppContext.BaseDirectory, "payload", "AllSense.exe");
-        if (!File.Exists(payload))
-        {
-            StatusText.Text = "File payload tidak ditemukan.";
-            InstallBtn.IsEnabled = true;
-            return;
-        }
-
-        string installDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AllSense");
-        string destExe = Path.Combine(installDir, "AllSense.exe");
-
-        // cegah menimpa app yang sedang berjalan
-        var running = System.Diagnostics.Process.GetProcessesByName("AllSense");
-        if (running.Length > 0)
-        {
-            StatusText.Text = "AllSense sedang berjalan. Tutup dulu.";
-            InstallBtn.IsEnabled = true;
-            return;
-        }
+        Progress.Visibility = Visibility.Visible;
+        Progress.Value = 0;
 
         try
         {
-            await Task.Run(() =>
-            {
-                Directory.CreateDirectory(installDir);
-                File.Copy(payload, destExe, true);
-            });
-            Progress.Value = 45;
+            Directory.CreateDirectory(dest);
+            var target = Path.Combine(dest, ExeName);
 
-            await Task.Run(() => CreateShortcuts(destExe, installDir));
+            Progress.Value = 25;
+            File.Copy(PayloadPath, target, true);
+            Progress.Value = 60;
+
+            // shortcut desktop
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            CreateShortcut(Path.Combine(desktop, "AllSense Control.lnk"), target);
             Progress.Value = 80;
 
-            WriteUninstall(installDir, destExe);
+            // shortcut start menu
+            var startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "AllSense Control.lnk");
+            CreateShortcut(startMenu, target);
             Progress.Value = 100;
 
-            StatusText.Text = "Instalasi selesai.";
-            InstallBtn.Content = "✓ Terpasang";
-            _done = true;
+            Status.Text = "Selesai. AllSense Control terpasang.";
+            InstallBtn.Visibility = Visibility.Collapsed;
+            CloseBtn.Visibility = Visibility.Visible;
+            TryRun.Visibility = Visibility.Visible;
         }
         catch (Exception ex)
         {
-            StatusText.Text = "Gagal: " + ex.Message;
+            Status.Text = "Gagal: " + ex.Message;
             InstallBtn.IsEnabled = true;
+            Progress.Visibility = Visibility.Collapsed;
         }
     }
 
-    private static void CreateShortcuts(string exe, string dir)
+    private static void CreateShortcut(string lnkPath, string target)
     {
-        var shellType = Type.GetTypeFromProgID("WScript.Shell");
-        if (shellType is null) return;
-        dynamic shell = Activator.CreateInstance(shellType);
-
-        string[] folders =
-        {
-            Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
-            Environment.GetFolderPath(Environment.SpecialFolder.Programs)
-        };
-        foreach (var folder in folders)
-        {
-            if (string.IsNullOrEmpty(folder)) continue;
-            string lnk = Path.Combine(folder, "AllSense.lnk");
-            dynamic sc = shell.CreateShortcut(lnk);
-            sc.TargetPath = exe;
-            sc.WorkingDirectory = dir;
-            sc.Description = "AllSense Control — universal power control";
-            sc.Save();
-        }
+        dynamic shell = Activator.CreateInstance(Type.GetTypeFromProgID("WScript.Shell")!)!;
+        dynamic sc = shell.CreateShortcut(lnkPath);
+        sc.TargetPath = target;
+        sc.WorkingDirectory = Path.GetDirectoryName(target);
+        sc.IconLocation = target + ",0";
+        sc.Save();
     }
 
-    private static void WriteUninstall(string dir, string exe)
+    private void Run_Click(object sender, RoutedEventArgs e)
     {
-        using var key = Registry.CurrentUser.CreateSubKey(
-            @"Software\Microsoft\Windows\CurrentVersion\Uninstall\AllSense");
-        key.SetValue("DisplayName", "AllSense Control");
-        key.SetValue("DisplayVersion", AppVersion);
-        key.SetValue("Publisher", "AllSense");
-        key.SetValue("InstallLocation", dir);
-        key.SetValue("DisplayIcon", exe);
-        key.SetValue("UninstallString", $"cmd /c rmdir /s /q \"{dir}\"");
-        key.SetValue("NoModify", 1);
-        key.SetValue("NoRepair", 1);
+        try { Process.Start(new ProcessStartInfo(Path.Combine(PathBox.Text.Trim(), ExeName)) { UseShellExecute = true }); }
+        catch { }
+        Close();
     }
 
-    private void CloseBtn_Click(object sender, System.Windows.RoutedEventArgs e) => Close();
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
 }

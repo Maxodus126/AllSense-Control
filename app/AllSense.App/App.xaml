@@ -3,19 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="BgBrush" Color="#0B0C10"/>
-        <SolidColorBrush x:Key="PanelBrush" Color="#13151B"/>
-        <SolidColorBrush x:Key="Panel2Brush" Color="#1A1E28"/>
-        <SolidColorBrush x:Key="LineBrush" Color="#FFFFFF12"/>
-        <SolidColorBrush x:Key="FgBrush" Color="#ECEEF3"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#97A0AE"/>
-        <SolidColorBrush x:Key="DimBrush" Color="#596272"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#FF4356"/>
-        <SolidColorBrush x:Key="AccentBlueBrush" Color="#4D8DFF"/>
-        <SolidColorBrush x:Key="AccentGreenBrush" Color="#35C973"/>
-        <SolidColorBrush x:Key="AccentAmberBrush" Color="#FFB020"/>
+        <!-- WPF menulis warna 8-digit sebagai AARRGGBB (alpha dulu) -->
+        <SolidColorBrush x:Key="BgBrush" Color="#FF07080B"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#FF101219"/>
+        <SolidColorBrush x:Key="Panel2Brush" Color="#FF161A23"/>
+        <SolidColorBrush x:Key="RaisedBrush" Color="#FF1C212D"/>
+        <SolidColorBrush x:Key="TrackBrush" Color="#FF262B37"/>
+        <SolidColorBrush x:Key="LineBrush" Color="#12FFFFFF"/>
+        <SolidColorBrush x:Key="Line2Brush" Color="#21FFFFFF"/>
+        <SolidColorBrush x:Key="FgBrush" Color="#FFEEF0F5"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#FF97A0AE"/>
+        <SolidColorBrush x:Key="DimBrush" Color="#FF596272"/>
+        <SolidColorBrush x:Key="RedBrush" Color="#FFFF4356"/>
+        <SolidColorBrush x:Key="BlueBrush" Color="#FF4D8DFF"/>
+        <SolidColorBrush x:Key="GreenBrush" Color="#FF35C973"/>
+        <SolidColorBrush x:Key="AmberBrush" Color="#FFFFB020"/>
+
+        <!-- versi lembut (alpha rendah) utk latar badge/toggle aktif -->
+        <SolidColorBrush x:Key="RedSoftBrush" Color="#1FFF4356"/>
+        <SolidColorBrush x:Key="BlueSoftBrush" Color="#1F4D8DFF"/>
+        <SolidColorBrush x:Key="GreenSoftBrush" Color="#1C35C973"/>
+        <SolidColorBrush x:Key="AmberSoftBrush" Color="#1CFFB020"/>
+
+        <!-- border berwarna tipis -->
+        <SolidColorBrush x:Key="RedLineBrush" Color="#52FF4356"/>
+        <SolidColorBrush x:Key="BlueLineBrush" Color="#524D8DFF"/>
+        <SolidColorBrush x:Key="GreenLineBrush" Color="#5935C973"/>
+        <SolidColorBrush x:Key="AmberLineBrush" Color="#52FFB020"/>
+
         <Style TargetType="Window">
-            <Setter Property="Background" Value="{StaticResource BgBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
