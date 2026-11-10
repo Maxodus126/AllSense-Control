@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
@@ -13,19 +14,17 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        PathBox.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AllSense");
-        if (!File.Exists(PayloadPath))
-            Status.Text = "Tidak menemukan AllSense.exe di samping installer.";
+        // Lokasi default: per-user (tanpa admin), cocok untuk utility onboard.
+        PathBox.Text = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Programs", "AllSense");
         UpdateInstallState();
     }
 
     private void UpdateInstallState() =>
-        InstallBtn.IsEnabled = File.Exists(PayloadPath) && LicenseCheck.IsChecked == true;
+        InstallBtn.IsEnabled = LicenseCheck.IsChecked == true;
 
     private void License_Changed(object sender, RoutedEventArgs e) => UpdateInstallState();
-
-    private string PayloadPath =>
-        Path.Combine(Path.GetDirectoryName(Environment.ProcessPath)!, ExeName);
 
     private void Browse_Click(object sender, RoutedEventArgs e)
     {
@@ -67,7 +66,7 @@ public partial class MainWindow : Window
             var target = Path.Combine(dest, ExeName);
 
             Progress.Value = 25;
-            File.Copy(PayloadPath, target, true);
+            File.WriteAllBytes(target, GetPayloadBytes());
             Progress.Value = 60;
 
             // shortcut desktop
@@ -91,6 +90,17 @@ public partial class MainWindow : Window
             InstallBtn.IsEnabled = true;
             Progress.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private static byte[] GetPayloadBytes()
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        var name = asm.GetManifestResourceNames().First(n => n.EndsWith("AllSense.exe"));
+        using var src = asm.GetManifestResourceStream(name)
+            ?? throw new InvalidOperationException("Payload AllSense.exe tidak ditemukan.");
+        using var ms = new MemoryStream();
+        src.CopyTo(ms);
+        return ms.ToArray();
     }
 
     private static void CreateShortcut(string lnkPath, string target)

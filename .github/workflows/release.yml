@@ -18,10 +18,10 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Publish AllSense.App (single-file)
-        run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release -o publish/app --nologo
+      - name: Publish AllSense.App (single-file, payload utk installer)
+        run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release --nologo
 
-      - name: Publish Installer (single-file)
+      - name: Publish Installer (single-file, payload tertanam)
         run: dotnet publish app/Installer/Installer.csproj -c Release -o publish/installer --nologo
 
       - name: Stage release bundle
@@ -29,7 +29,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path bundle | Out-Null
           Copy-Item publish\installer\AllSenseSetup.exe "bundle\AllSense setup.exe"
-          Copy-Item publish\app\AllSense.exe "bundle\AllSense.exe"
+          Copy-Item app\AllSense.App\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\AllSense.exe "bundle\AllSense.exe"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

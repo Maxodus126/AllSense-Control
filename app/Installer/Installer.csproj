@@ -20,4 +20,23 @@
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
+  <!-- Bangun AllSense.App duluan, lalu embed AllSense.exe sebagai payload internal. -->
+  <ItemGroup>
+    <ProjectReference Include="..\AllSense.App\AllSense.App.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <Private>false</Private>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- Payload = hasil PUBLISH AllSense.App (single-file self-contained). -->
+  <PropertyGroup>
+    <PayloadPath Condition="'$(PayloadPath)' == ''">..\AllSense.App\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\AllSense.exe</PayloadPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(PayloadPath)" Condition="Exists('$(PayloadPath)')">
+      <LogicalName>AllSense.exe</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
