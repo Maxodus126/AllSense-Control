@@ -111,7 +111,6 @@ public partial class MainWindow : Window
             src.AddHook(WndProc);
             UpdateBehaviorUI();
             _ = AutoCheckUpdate();
-            _ = LoadHealthAsync();
         };
     }
 
@@ -284,19 +283,7 @@ public partial class MainWindow : Window
         if (pct >= 0) BatteryText.Text = $"{pct}% · {(ac ? "AC" : "BAT")}";
         AcText.Text = $"{(ac ? "AC" : "BAT")} · {(pct >= 0 ? pct + "%" : "—")}";
 
-        _tray?.SetBattery(pct >= 0 ? pct : null, ac);
-
         CheckLowBattery(ac, pct);
-    }
-
-    // ---------- kesehatan baterai (WMI Win32_Battery, baca sekali) ----------
-    private async Task LoadHealthAsync()
-    {
-        var h = await BatteryInfo.GetAsync();
-        if (h is null) { HealthRow.Visibility = Visibility.Collapsed; return; }
-        HealthLbl.Text = BatteryInfo.Format(h);
-        HealthLbl.Foreground = h.HealthPercent >= 80 ? Green
-            : h.HealthPercent >= 60 ? Amber : Red;
     }
 
     private void CheckLowBattery(bool ac, int pct)
