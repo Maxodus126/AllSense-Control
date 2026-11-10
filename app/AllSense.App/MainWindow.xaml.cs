@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,6 +103,7 @@ public partial class MainWindow : Window
             ApplyHotkeyBindings();
             var src = (HwndSource)PresentationSource.FromVisual(this)!;
             src.AddHook(WndProc);
+            _ = AutoCheckUpdate();
         };
     }
 
@@ -294,21 +296,27 @@ public partial class MainWindow : Window
     private void ExitBtn_Click(object sender, MouseButtonEventArgs e) => Close();
 
     // ---------- update ----------
+    // Cek otomatis saat startup; hening, hanya muncul bila ada versi baru.
+    private async Task AutoCheckUpdate()
+    {
+        var up = await Task.Run(() => Updater.CheckAsync());
+        if (up is not null && Updater.IsNewer(up.Version) && _pending is null)
+        {
+            _pending = up;
+            UpStatus.Text = $"Versi {up.Version} tersedia";
+            DlBtn.Visibility = Visibility.Visible;
+        }
+    }
+
     private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
     {
         CheckBtn.IsEnabled = false;
         UpStatus.Text = "Memeriksa…";
-        var up = await Task.Run(() => Updater.CheckAsync(_settings.UpdateUrl));
+        var up = await Task.Run(() => Updater.CheckAsync());
         if (up is null)
-        {
-            UpStatus.Text = string.IsNullOrWhiteSpace(_settings.UpdateUrl)
-                ? "URL update belum diatur"
-                : "Gagal / tidak ada pembaruan";
-        }
+            UpStatus.Text = "Gagal / tidak ada pembaruan";
         else if (!Updater.IsNewer(up.Version))
-        {
             UpStatus.Text = "Sudah versi terbaru";
-        }
         else
         {
             _pending = up;
@@ -323,24 +331,46 @@ public partial class MainWindow : Window
         if (_pending is null) return;
         DlBtn.IsEnabled = false;
         UpProgress.Visibility = Visibility.Visible;
-        var dest = await Task.Run(() => Updater.DownloadAsync(_pending.Url, _pending.Version, p => UpProgress.Dispatcher.Invoke(() => UpProgress.Value = p)));
+        UpProgress.Value = 0;
+
+        var dest = await Task.Run(() => Updater.DownloadAsync(_pending.Url, _pending.Version,
+            p => UpProgress.Dispatcher.Invoke(() => UpProgress.Value = p)));
+
+        UpProgress.Visibility = Visibility.Collapsed;
         if (dest is null)
         {
             UpStatus.Text = "Unduhan gagal";
-            UpProgress.Visibility = Visibility.Collapsed;
+            DlBtn.IsEnabled = true;
+            return;
         }
-        else
+
+        var apply = MessageBox.Show("Update siap. Terapkan sekarang? Aplikasi akan ditutup dan restart otomatis.",
+            "AllSense Control", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+        if (!apply)
         {
-            UpStatus.Text = "Selesai. Jalankan dari folder update.";
-            try
-            {
-                var dir = Path.Combine(App.LocalDir, "update");
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", dir) { UseShellExecute = true });
-            }
-            catch { }
-            DlBtn.Visibility = Visibility.Collapsed;
+            UpStatus.Text = "Unduhan selesai. Terapkan nanti lewat tombol berversi.";
+            DlBtn.IsEnabled = true;
+            return;
         }
-        DlBtn.IsEnabled = true;
+
+        if (!Updater.CanSelfReplace())
+        {
+            UpStatus.Text = "Lokasi instal butuh admin — jalankan sekali sebagai admin";
+            DlBtn.IsEnabled = true;
+            return;
+        }
+
+        var script = Updater.StageAndRestart(dest);
+        try
+        {
+            Process.Start(new ProcessStartInfo("cmd.exe", $" /c start /b \"\" \"{script}\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
+        }
+        catch { }
+        Close();
     }
 
     // ---------- docking ----------

@@ -21,3 +21,12 @@ jobs:
 
       - name: Build Installer
         run: dotnet build app/Installer/Installer.csproj -c Release --nologo
+
+      - name: Publish AllSense.App (single-file)
+        run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release -o publish/app --nologo
+
+      - name: Upload AllSense artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AllSense-win-x64
+          path: publish/app/AllSense.exe
