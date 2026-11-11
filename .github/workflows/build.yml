@@ -19,6 +19,9 @@ jobs:
       - name: Build AllSense.App
         run: dotnet build app/AllSense.App/AllSense.App.csproj -c Release --nologo
 
+      - name: Build Uninstall
+        run: dotnet build app/Uninstall/Uninstall.csproj -c Release --nologo
+
       - name: Build Installer
         run: dotnet build app/Installer/Installer.csproj -c Release --nologo
 

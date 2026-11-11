@@ -77,14 +77,20 @@ public partial class MainWindow : Window
             File.WriteAllBytes(target, GetPayloadBytes());
             Progress.Value = 60;
 
-            // shortcut desktop
+            // shortcut desktop + start menu
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            var startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "AllSense Control.lnk");
             CreateShortcut(Path.Combine(desktop, "AllSense Control.lnk"), target);
+            CreateShortcut(startMenu, target);
             Progress.Value = 80;
 
-            // shortcut start menu
-            var startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "AllSense Control.lnk");
-            CreateShortcut(startMenu, target);
+            // tulis uninstaller (berdiri sendiri, hapus semuanya termasuk dirinya)
+            var uninstTarget = Path.Combine(dest, "Uninstall.exe");
+            File.WriteAllBytes(uninstTarget, GetUninstallPayloadBytes());
+            Progress.Value = 90;
+
+            // registrasi Uninstall di HKCU agar tampil di Windows Apps + Revo
+            RegisterUninstall(target, uninstTarget, dest);
             Progress.Value = 100;
 
             Status.Text = "Selesai. AllSense Control terpasang.";
@@ -98,6 +104,36 @@ public partial class MainWindow : Window
             InstallBtn.IsEnabled = true;
             Progress.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private static void RegisterUninstall(string target, string uninstTarget, string installDir)
+    {
+        try
+        {
+            using var key = Registry.CurrentUser.CreateSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Uninstall\AllSense Control");
+            key?.SetValue("DisplayName", "AllSense Control");
+            key?.SetValue("DisplayVersion", "1.0.6");
+            key?.SetValue("Publisher", "Maxodus");
+            key?.SetValue("DisplayIcon", target + ",0");
+            key?.SetValue("UninstallString", "\"" + uninstTarget + "\"");
+            key?.SetValue("InstallLocation", installDir);
+            key?.SetValue("NoModify", 1, RegistryValueKind.DWord);
+            key?.SetValue("NoRepair", 1, RegistryValueKind.DWord);
+            key?.SetValue("EstimatedSize", 90000, RegistryValueKind.DWord);
+        }
+        catch { }
+    }
+
+    private static byte[] GetUninstallPayloadBytes()
+    {
+        var asm = Assembly.GetExecutingAssembly();
+        var name = asm.GetManifestResourceNames().First(n => n.EndsWith("Uninstall.exe"));
+        using var src = asm.GetManifestResourceStream(name)
+            ?? throw new InvalidOperationException("Payload Uninstall.exe tidak ditemukan.");
+        using var ms = new MemoryStream();
+        src.CopyTo(ms);
+        return ms.ToArray();
     }
 
     private static byte[] GetPayloadBytes()

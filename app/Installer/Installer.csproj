@@ -32,11 +32,20 @@
   <!-- Payload = hasil PUBLISH AllSense.App (single-file self-contained). -->
   <PropertyGroup>
     <PayloadPath Condition="'$(PayloadPath)' == ''">..\AllSense.App\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\AllSense.exe</PayloadPath>
+    <UninstallPath Condition="'$(UninstallPath)' == ''">..\Uninstall\bin\Release\net10.0-windows\win-x64\publish\Uninstall.exe</UninstallPath>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(PayloadPath)" Condition="Exists('$(PayloadPath)')">
       <LogicalName>AllSense.exe</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="$(UninstallPath)" Condition="Exists('$(UninstallPath)')">
+      <LogicalName>Uninstall.exe</LogicalName>
+    </EmbeddedResource>
+    <ProjectReference Include="..\Uninstall\Uninstall.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <Private>false</Private>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

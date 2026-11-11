@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     private PowerMode _mode = PowerMode.Balanced;
     private readonly DispatcherTimer _timer;
     private UpdateInfo? _pending;
-    private readonly ModeOsd _osd = new();
+    private ModeOsd? _osd;
     private string? _hkToggleLabel, _hkCycleLabel;
     private bool _suppressApply;
     private IntPtr _hWnd;
@@ -170,7 +170,7 @@ public partial class MainWindow : Window
         _settings.Save();
         ApplyModeVisual();
         PowerControl.Apply(m);
-        _osd.Show(m);
+        (_osd ??= new ModeOsd()).Show(m);
         if (manual && !NativeInterop.GetPowerStatus().onAc)
             _restoreOnAc = null; // pilihan manual di baterai mengalahkan auto-restore
     }
@@ -773,7 +773,7 @@ public partial class MainWindow : Window
         SystemEvents.PowerModeChanged -= OnPowerModeChanged;
         _wake?.Dispose();
         if (_tray is not null) { _tray.Dispose(); _tray = null; }
-        _osd.Close();
+        _osd?.Close();
         base.OnClosed(e);
     }
 }

@@ -21,6 +21,9 @@ jobs:
       - name: Publish AllSense.App (single-file, payload utk installer)
         run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release --nologo
 
+      - name: Publish Uninstall (single-file, payload utk installer)
+        run: dotnet publish app/Uninstall/Uninstall.csproj -c Release --nologo
+
       - name: Publish Installer (single-file, payload tertanam)
         run: dotnet publish app/Installer/Installer.csproj -c Release -o publish/installer --nologo
 

@@ -1,0 +1,34 @@
+<Window x:Class="AllSenseUninstall.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AllSense Uninstall" Width="440" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Background="#FF0E1017" Foreground="#FFEEF0F5"
+        FontFamily="Segoe UI" FontSize="13">
+
+    <StackPanel Margin="26,24,26,24">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="AllSense Control" FontSize="19" FontWeight="Bold"/>
+            <TextBlock Text="    Uninstaller" FontSize="13" Foreground="#FF97A0AE"
+                       VerticalAlignment="Bottom" Margin="8,0,0,3"/>
+        </StackPanel>
+        <TextBlock Text="Aplikasi dan seluruh data pengaturannya akan dihapus dari komputer ini."
+                   TextWrapping="Wrap" Foreground="#FF97A0AE" Margin="0,0,0,4"/>
+        <TextBlock Text="Termasuk: folder program, pengaturan (APPDATA), pintasan Desktop/Start Menu, dan autostart."
+                   TextWrapping="Wrap" FontSize="11.5" Foreground="#FF596272" Margin="0,0,0,18"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="CancelBtn" Content="Batal" Height="38" Click="Cancel_Click"
+                    Cursor="Hand" Background="#FF161A23" BorderBrush="#21FFFFFF"
+                    BorderThickness="1" Foreground="#FFEEF0F5"/>
+            <Button Grid.Column="1" x:Name="GoBtn" Content="Hapus Pemasangan" Height="38"
+                    Margin="10,0,0,0" Click="Go_Click" Cursor="Hand"
+                    Background="#FFFF4356" BorderThickness="0" Foreground="White"
+                    FontWeight="SemiBold"/>
+        </Grid>
+    </StackPanel>
+</Window>
