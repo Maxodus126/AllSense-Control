@@ -10,9 +10,9 @@
 <img src="https://img.shields.io/badge/.NET%2010-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/>&nbsp;
 <img src="https://img.shields.io/badge/Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11"/>
 
-<br/><br/>
+<br/>
 
-<img src="docs/preview-panel.svg" alt="Pratinjau panel AllSense Control" width="780">
+<img src="docs/screenshot.png" alt="AllSense Control — panel" width="420" style="border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
 
 <br/>
 
@@ -106,7 +106,7 @@ Yang vendor-specific (fan curve, GPU mux, undervolt, RGB) sengaja **tidak** dise
 
 | Pratinjau | Demo interaktif |
 |---|---|
-| [preview-panel.svg](docs/preview-panel.svg) | [app-demo.html](docs/app-demo.html) |
+| ![Tampilan AllSense](docs/screenshot.png) | [app-demo.html](docs/app-demo.html) |
 | [Situs produk](https://maxodus126.github.io/AllSense-Control/) | — |
 
 OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode daya.
