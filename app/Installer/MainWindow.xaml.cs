@@ -65,6 +65,14 @@ public partial class MainWindow : Window
             Directory.CreateDirectory(dest);
             var target = Path.Combine(dest, ExeName);
 
+            // Jika AllSense sedang berjalan, matikan dulu agar file tidak terkunci.
+            try
+            {
+                foreach (var p in Process.GetProcessesByName("AllSense"))
+                    p.Kill();
+            }
+            catch { }
+
             Progress.Value = 25;
             File.WriteAllBytes(target, GetPayloadBytes());
             Progress.Value = 60;

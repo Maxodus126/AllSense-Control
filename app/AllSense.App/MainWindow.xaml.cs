@@ -31,6 +31,7 @@ public partial class MainWindow : Window
     private bool _wasOnAc = NativeInterop.GetPowerStatus().onAc;
     private PowerMode? _restoreOnAc;
     private bool _batteryWarned;
+    private bool _quitRequested;
 
     private static readonly (int Mods, int Vk)[] ToggleFallback =
     {
@@ -68,6 +69,7 @@ public partial class MainWindow : Window
         VersionChip.Text = "v" + Updater.CurrentVersion;
         AboutVersion.Text = Updater.CurrentVersion;
         InstalledVersion.Text = Updater.CurrentVersion;
+        BuildText.Text = Environment.OSVersion.Version.Build.ToString();
         DockRight();
 
         _mode = ParseMode(_settings.PowerMode);
@@ -187,8 +189,8 @@ public partial class MainWindow : Window
         _tray = new TrayIcon
         {
             ToggleWindow = () => Dispatcher.Invoke(ToggleWindow),
+            ExitApp = () => Dispatcher.Invoke(() => { _quitRequested = true; Close(); }),
             CycleMode = () => Dispatcher.Invoke(CycleMode),
-            ExitApp = () => Dispatcher.Invoke(Close),
         };
     }
 
@@ -476,7 +478,27 @@ public partial class MainWindow : Window
         else WindowState = WindowState.Minimized;
     }
     private void HeaderClose_Click(object sender, RoutedEventArgs e) => Close();
-    private void ExitBtn_Click(object sender, MouseButtonEventArgs e) => Close();
+
+    // Tombol "Keluar" di panel = exit asli (bukan sembunyi ke tray).
+    private void ExitBtn_Click(object sender, MouseButtonEventArgs e)
+    {
+        _quitRequested = true;
+        Close();
+    }
+
+    // X / Alt+F4 / Close() apa pun → sembunyikan ke tray, APLIKASI TETAP HIDUP.
+    // Exit sejati hanya lewat tray "Keluar", tombol Keluar, atau update-restart.
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+        if (!_quitRequested)
+        {
+            e.Cancel = true;
+            if (_tray is not null) Hide();
+            else WindowState = WindowState.Minimized;
+            return;
+        }
+        base.OnClosing(e);
+    }
 
     // ---------- update ----------
     // Cek otomatis saat startup; hening, hanya muncul bila ada versi baru.
@@ -553,6 +575,7 @@ public partial class MainWindow : Window
             });
         }
         catch { }
+        _quitRequested = true;
         Close();
     }
 

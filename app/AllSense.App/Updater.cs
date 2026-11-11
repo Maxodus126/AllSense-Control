@@ -14,7 +14,7 @@ public sealed record UpdateInfo(string Version, string Url);
 /// </summary>
 public static class Updater
 {
-    public const string CurrentVersion = "1.0.4";
+    public const string CurrentVersion = "1.0.5";
     private const string Repo = "Maxodus126/AllSense-Control";
     private const string LatestUrl = $"https://api.github.com/repos/{Repo}/releases/latest";
 
@@ -84,7 +84,9 @@ public static class Updater
                 read += n;
                 if (total > 0) progress?.Invoke((int)Math.Min(100, read * 100 / total));
             }
-            return fs.Length > 0 ? dest : null;
+            // Tolak unduhan yang mencurigakan (0 byte / terlalu kecil) agar
+            // exe yang sehat tidak pernah digantikan file korup.
+            return fs.Length > 200_000 ? dest : null;
         }
         catch { return null; }
     }
