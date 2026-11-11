@@ -2,46 +2,75 @@
 
 # ⚡ AllSense Control
 
-**Kendalikan daya laptopmu dalam satu panel — tanpa admin, tanpa driver vendor.**
+**Satu panel kecil untuk kendalikan daya laptopmu — tanpa admin, tanpa driver vendor.**
 
-<img src="https://img.shields.io/github/v/release/Maxodus126/AllSense-Control?style=for-the-badge&label=RILIS&color=FF4356&logo=github" alt="Rilis"/>&nbsp;
-<img src="https://img.shields.io/github/actions/workflow/status/Maxodus126/AllSense-Control/build.yml?branch=main&style=for-the-badge&label=CI&color=35C973" alt="CI"/>&nbsp;
-<img src="https://img.shields.io/github/stars/Maxodus126/AllSense-Control?style=for-the-badge&label=STARS&color=D9A013&logo=github&logoColor=white" alt="Stars"/>&nbsp;
-<img src="https://img.shields.io/badge/.NET%2010-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 10"/>&nbsp;
-<img src="https://img.shields.io/badge/Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11"/>
+Kecerahan · Volume · Mode daya · Hotkey global · Self-update otomatis
 
-<br/>
+<br>
 
-<img src="docs/screenshot.png" alt="AllSense Control — panel" width="420" style="border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.55);">
+<!-- Badges -->
+<p>
+  <a href="https://github.com/Maxodus126/AllSense-Control/releases/latest">
+    <img src="https://img.shields.io/github/v/release/Maxodus126/AllSense-Control?style=flat-square&label=RILIS&color=FF4356&logo=github&logoColor=white" alt="Rilis">
+  </a>
+  <a href="https://github.com/Maxodus126/AllSense-Control/actions/workflows/build.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Maxodus126/AllSense-Control/build.yml?branch=main&style=flat-square&label=CI&color=35C973&logo=githubactions&logoColor=white" alt="CI">
+  </a>
+  <a href="https://github.com/Maxodus126/AllSense-Control/issues">
+    <img src="https://img.shields.io/github/issues/Maxodus126/AllSense-Control?style=flat-square&label=ISSUE&color=8A8FFC&logo=github&logoColor=white" alt="Issues">
+  </a>
+  <a href="https://github.com/Maxodus126/AllSense-Control/stargazers">
+    <img src="https://img.shields.io/github/stars/Maxodus126/AllSense-Control?style=flat-square&label=STARS&color=D9A013&logo=github&logoColor=white" alt="Stars">
+  </a>
+  <img src="https://img.shields.io/badge/.NET%2010-512BD4?style=flat-square&logo=dotnet&logoColor=white" alt=".NET 10">
+  <img src="https://img.shields.io/badge/Windows%2010%2F11-0078D6?style=flat-square&logo=windows&logoColor=white" alt="Windows 10/11">
+</p>
 
-<br/>
+<br>
 
-[**⬇️ Unduh `AllSense.setup.exe`**](https://github.com/Maxodus126/AllSense-Control/releases/latest/download/AllSense.setup.exe) &nbsp;·&nbsp; [🌐 Situs](https://maxodus126.github.io/AllSense-Control/) &nbsp;·&nbsp; [📦 Rilis](https://github.com/Maxodus126/AllSense-Control/releases)
+<img src="docs/screenshot.png" alt="AllSense Control — panel" width="460" style="border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);">
+
+<br>
+
+[**⬇️ Unduh `AllSense.setup.exe`**](https://github.com/Maxodus126/AllSense-Control/releases/latest/download/AllSense.setup.exe) 
+&nbsp; · &nbsp; [🌐 Situs produk](https://maxodus126.github.io/AllSense-Control/)
+&nbsp; · &nbsp; [📦 Semua rilis](https://github.com/Maxodus126/AllSense-Control/releases)
 
 </div>
 
 ---
 
-**AllSense Control** adalah utility bergaya *gaming laptop* yang menyatukan kontrol **mode daya**, **kecerahan**, **volume**, dan **hotkey global** dalam satu panel kecil yang ter-dock di kanan layar. Berjalan di **Windows 10/11**, **tanpa hak admin**, dan **tanpa driver vendor** — kompatibel lintas merek: ASUS, Lenovo, HP, Acer, Dell, MSI, dan lainnya.
+## 📑 Daftar Isi
+
+- [Kenapa AllSense Control?](#kenapa-allsense-control)
+- [✨ Fitur](#fitur)
+- [🚀 Mulai dalam 30 detik](#mulai-dalam-30-detik)
+- [🖥️ Tampilan](#tampilan)
+- [🔬 Kenapa "universal"?](#kenapa-universal)
+- [📊 vs. bloatware vendor](#vs-bloatware-vendor)
+- [⌨️ Hotkey bawaan](#hotkey-bawaan)
+- [🛠️ Membangun dari sumber](#membangun-dari-sumber)
+- [🗺️ Roadmap](#roadmap)
+- [❓ FAQ](#faq)
+- [🤝 Kontribusi](#kontribusi)
 
 ---
 
-## 🚀 Mulai dalam 30 detik
+## Kenapa AllSense Control?
 
-| Langkah | Aksi |
-|---|---|
-| **1 — Unduh** | klik [`AllSense.setup.exe`](https://github.com/Maxodus126/AllSense-Control/releases/latest/download/AllSense.setup.exe) |
-| **2 — Jalankan** | setup → *Install* (satu file, tanpa admin) |
-| **3 — Selesai** | ikon ⚡ di tray; panel muncul di kanan layar |
+Aplikasi bawaan laptop (Armoury Crate, Vantage, OMEN, …) di **berat**, **selalu nongol**, dan **terkunci ke satu merek**. AllSense Control mengambil *subset paling penting* dari itu — tapi dibuat **universal**, **ringan**, dan **terbuka**.
 
-> 💡 Bila Windows menampilkan *Unknown publisher* (belum di-tanda-tangani): **More info → Run anyway**.
-
-### Selalu terbaru
-Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul → **self-update** & restart otomatis. Tanpa uninstall/reinstall.
+| | **AllSense Control** | App vendor |
+|---|---|---|
+| 🌍 Kompatibilitas | Semua merek laptop | Hanya mereknya |
+| ⚖️ Lisensi | Gratis & sumber terbuka | Free, tapi tertutup |
+| 🚫 Admin | Tidak perlu | Sering perlu |
+| 🧹 Residue | Satu panel kecil | Background service & updater |
+| 🔄 Update | Otomatis via GitHub | Wajib akun |
 
 ---
 
-## ✨ Fitur
+## Fitur
 
 | ⚙️ | Fitur | Cara kerja (API Windows resmi) |
 |---|---|---|
@@ -58,34 +87,33 @@ Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul �
 
 ---
 
-## 📊 Kenapa bukan "bloatware" vendor?
+## Mulai dalam 30 detik
 
-Banyak laptop hadir dengan app vendor (Armoury Crate, Vantage, OMEN, …) yang berat, selalu nongol, dan terkunci ke satu merek. AllSense Control menawarkan **subset penting yang sama** — tapi universal & minimalis.
-
-| | **AllSense Control** | App vendor |
-|---|---|---|
-| 🌍 Kompatibilitas | Semua merek | Hanya mereknya |
-| ⚖️ Lisensi | Gratis & ringan | Free, tapi berat |
-| 🚫 Admin | Tidak perlu | Sering perlu |
-| 🧹 Residue | Satu panel kecil | Background service & updater |
-| 🔓 Terbuka | Sumber terbuka | Tertutup |
-| 🔄 Update | Otomatis via GitHub | Wajib akun |
-
----
-
-## ⌨️ Hotkey bawaan
-
-| Kombinasi | Aksi |
+| Langkah | Aksi |
 |---|---|
-| `Ctrl + Alt + A` | Buka / sembunyikan panel |
-| `Ctrl + Alt + M` | Ganti mode daya |
-| *kustom* | rekam kombinasi sendiri di Settings |
+| **1 — Unduh** | klik [`AllSense.setup.exe`](https://github.com/Maxodus126/AllSense-Control/releases/latest/download/AllSense.setup.exe) |
+| **2 — Jalankan** | setup → **Install** (satu file, tanpa admin) |
+| **3 — Selesai** | ikon ⚡ di tray; panel muncul di kanan layar |
 
-> Bentrok dengan aplikasi lain? Otomatis fallback ke kombinasi cadangan.
+> 💡 Bila Windows menampilkan *Unknown publisher* (belum di-tanda-tangani): **More info → Run anyway**.
+
+### Selalu terbaru
+Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul → **self-update** & restart otomatis. Tanpa uninstall/reinstall.
 
 ---
 
-## 🔬 Kenapa bisa "universal"?
+## Tampilan
+
+| Pratinjau | Demo interaktif |
+|---|---|
+| ![Tampilan AllSense](docs/screenshot.png) | [app-demo.html](docs/app-demo.html) |
+| [Situs produk](https://maxodus126.github.io/AllSense-Control/) | — |
+
+OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode daya.
+
+---
+
+## Kenapa universal?
 
 Filosofi: **hanya API Windows resmi** — tanpa hook ACPI vendor, tanpa driver, tanpa UAC.
 
@@ -98,30 +126,32 @@ Filosofi: **hanya API Windows resmi** — tanpa hook ACPI vendor, tanpa driver, 
 | Status baterai | `kernel32` | ✅ |
 | Update | GitHub API | ✅ |
 
-Yang vendor-specific (fan curve, GPU mux, undervolt, RGB) sengaja **tidak** disentuh — itu yang membuatnya jalan di mana saja.
+Yang vendor-specific (fan curve, GPU mux, undervolt, RGB) sengaja **tidak** disentuh — itulah yang membuatnya jalan di mana saja.
 
 ---
 
-## 🖥️ Tampilan
+## Hotkey bawaan
 
-| Pratinjau | Demo interaktif |
+| Kombinasi | Aksi |
 |---|---|
-| ![Tampilan AllSense](docs/screenshot.png) | [app-demo.html](docs/app-demo.html) |
-| [Situs produk](https://maxodus126.github.io/AllSense-Control/) | — |
+| `Ctrl + Alt + A` | Buka / sembunyikan panel |
+| `Ctrl + Alt + M` | Ganti mode daya |
+| *kustom* | rekam kombinasi sendiri di Settings |
 
-OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode daya.
+> Bentrok dengan aplikasi lain? Otomatis fallback ke kombinasi cadangan.
 
 ---
 
-## 🛠️ Membangun dari sumber
+## Membangun dari sumber
+
+**Prasyarat:** .NET 10 SDK ([unduh](https://dotnet.microsoft.com/download)).
 
 ```bash
-# Prasyarat: .NET 10 SDK
+# Aplikasi utama → bin/Release/.../win-x64/publish/AllSense.exe
 dotnet publish app/AllSense.App/AllSense.App.csproj -c Release
-# -> bin/Release/.../win-x64/publish/AllSense.exe
 
+# Installer self-contained (payload AllSense.exe tertanam) → AllSenseSetup.exe
 dotnet publish app/Installer/Installer.csproj -c Release -o publish/installer
-# -> AllSenseSetup.exe (payload AllSense.exe tertanam)
 ```
 
 **Struktur repo**
@@ -143,7 +173,7 @@ Tag `v*` → GitHub Actions membangun dan mengunggah **`AllSense.setup.exe`** + 
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] Mode daya AC/DC
 - [x] Self-update otomatis
@@ -156,23 +186,35 @@ Tag `v*` → GitHub Actions membangun dan mengunggah **`AllSense.setup.exe`** + 
 
 ---
 
-## ❓ FAQ
+## FAQ
 
-**Apakah butuh admin?**
+<details open>
+<summary><b>Apakah butuh admin?</b></summary>
+
 Tidak. Install & berjalan di mode user biasa (`asInvoker`).
+</details>
 
-**Kenapa kecerahan tak bisa diubah di laptop saya?**
+<details open>
+<summary><b>Kenapa kecerahan tak bisa diubah di laptop saya?</b></summary>
+
 Sebagian besar laptop mendukung; bila vendor memonopoli backlight, WMI/DDC bisa terblokir — slide nonaktif, aplikasi tetap normal.
+</details>
 
-**Apakah aman?**
+<details open>
+<summary><b>Apakah aman?</b></summary>
+
 Hanya memakai API Windows standar; tidak mengumpulkan data pribadi.
+</details>
 
-**Bagaimana cara update?**
+<details open>
+<summary><b>Bagaimana cara update?</b></summary>
+
 Otomatis lewat GitHub Releases — cukup klik "Unduh & Terapkan" saat ada versi baru.
+</details>
 
 ---
 
-## 🤝 Kontribusi
+## Kontribusi
 
 PR & issue disambut. Pastikan `dotnet build` lolos dan diuji pada laptop berbasis GPU berbeda.
 
