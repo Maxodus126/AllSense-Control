@@ -13,3 +13,7 @@ obj/
 
 # Repo terpisah (bukan bagian app ini)
 all-sense/
+
+# File sampah Windows / snapshot lokal
+desktop.ini
+ss_allsense.png
