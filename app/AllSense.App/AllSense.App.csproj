@@ -18,8 +18,10 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
-    <!-- Optimasi: buang ICU (~30MB) + assembly bahasa lain → EXE lebih kecil & startup lebih cepat -->
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- InvariantGlobalization TIDAK bisa dipakai utk WPF: font cache (MajorLanguages)
+         butuh data budaya nyata; mode invariant → CultureNotFoundException → window tak pernah muncul.
+         Wajib false, biarpun exe lebih besar (~+30MB ICU). -->
+    <InvariantGlobalization>false</InvariantGlobalization>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
 
