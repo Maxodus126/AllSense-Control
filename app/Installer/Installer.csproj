@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="GuardWpfInvariantGlobalization">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -19,6 +19,12 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
+
+  <!-- GUARD WPF: sama seperti AllSense.App — InvariantGlobalization=true memecah WPF. -->
+  <Target Name="GuardWpfInvariantGlobalization">
+    <Error Condition="'$(UseWPF)' == 'true' And '$(InvariantGlobalization)' == 'true'"
+           Text="InvariantGlobalization=true TIDAK kompatibel dengan WPF/WinForms: font cache WPF gagal (CultureNotFoundException), window tak tampil. Setel InvariantGlobalization=false." />
+  </Target>
 
   <!-- Bangun AllSense.App duluan, lalu embed AllSense.exe sebagai payload internal. -->
   <ItemGroup>

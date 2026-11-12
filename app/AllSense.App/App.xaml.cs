@@ -12,8 +12,32 @@ public partial class App : System.Windows.Application
 
     private static Mutex? _mutex;
 
+    internal const string SmokeEnv = "ALLSENSE_SMOKE_TEST";
+    internal static bool IsSmokeTest => Environment.GetEnvironmentVariable(SmokeEnv) == "1";
+
     protected override void OnStartup(System.Windows.StartupEventArgs e)
     {
+        // Mode smoke-test (dipakai Updater sebelum menimpa exe):
+        // verifikasi bootstrap WPF (font cache/ICU) sembuh TANPA side-effect
+        // hardware/tray/hotkey. Keluar 0 bila window bisa dibangun, 3 bila crash.
+        if (IsSmokeTest)
+        {
+            DispatcherUnhandledException += (_, a) => { a.Handled = true; Shutdown(3); };
+            var w = new System.Windows.Window
+            {
+                Width = 320, Height = 40, ShowInTaskbar = false,
+                WindowStyle = System.Windows.WindowStyle.None,
+                ResizeMode = System.Windows.ResizeMode.NoResize,
+                Content = new System.Windows.Controls.TextBlock
+                    { Text = "AllSense smoke-test", FontSize = 12 },
+            };
+            w.Show();
+            w.Dispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            w.Close();
+            Shutdown(0);
+            return;
+        }
+
         // Single-instance: cegah dua proses berjalan (hotkey global saling rebut).
         _mutex = new Mutex(true, "AllSense.SingleInstance", out var fresh);
         if (!fresh)
@@ -65,6 +89,8 @@ public partial class App : System.Windows.Application
         catch { }
     }
 
+    private static bool _warned;
+
     private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
     {
         try
@@ -73,6 +99,21 @@ public partial class App : System.Windows.Application
                 $"[{DateTime.Now:u}] {e.Exception}\n\n");
         }
         catch { }
+        // Jangan telan hening: kegagalan dahulu (font-cache) tertutup oleh Handled=true
+        // sehingga app "hidup" tanpa window. Sekarang tampilkan peringatan sekali per sesi,
+        // supaya kelainan terlihat oleh pengguna sementara aplikasi tetap berjalan.
+        if (!_warned)
+        {
+            _warned = true;
+            try
+            {
+                System.Windows.MessageBox.Show(
+                    "Terjadi kesalahan tak terduga.\nDetail tercatat di crash.log:\n" + LocalDir,
+                    "AllSense – Error", System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+            }
+            catch { }
+        }
         e.Handled = true;
     }
 }

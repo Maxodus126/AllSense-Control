@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="GuardWpfInvariantGlobalization">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -24,6 +24,14 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
+
+  <!-- GUARD WPF: InvariantGlobalization=true membuang data budaya → font cache WPF
+       (MS.Internal.FontCache.MajorLanguages) lempar CultureNotFoundException → window tak pernah tampil.
+       Error MSBuild ini memaksa build gagal bila flag berbahaya ini diaktifkan. -->
+  <Target Name="GuardWpfInvariantGlobalization">
+    <Error Condition="'$(UseWPF)' == 'true' And '$(InvariantGlobalization)' == 'true'"
+           Text="InvariantGlobalization=true TIDAK kompatibel dengan WPF/WinForms: mode invariant membuang data budaya, font cache WPF gagal render window (CultureNotFoundException), app tampil diam-diam. Setel InvariantGlobalization=false (bukan true)." />
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="System.Management" Version="10.0.14" />

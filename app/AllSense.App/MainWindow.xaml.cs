@@ -568,6 +568,17 @@ public partial class MainWindow : Window
             return;
         }
 
+        // Smoke-test build baru SEBELUM menutup app: kalau gagal boot
+        // (window tak muncul), tolak update & pertahankan versi lama.
+        var smokeOk = await Task.Run(() => Updater.SmokeTestAsync(dest));
+        if (!smokeOk)
+        {
+            UpStatus.Text = "Update ditolak: build baru gagal smoke-test (versi sekarang tetap dipakai).";
+            DlBtn.IsEnabled = true;
+            try { File.Delete(dest); } catch { }
+            return;
+        }
+
         var script = Updater.StageAndRestart(dest);
         try
         {

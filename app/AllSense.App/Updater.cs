@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AllSense;
@@ -84,11 +86,45 @@ public static class Updater
                 read += n;
                 if (total > 0) progress?.Invoke((int)Math.Min(100, read * 100 / total));
             }
-            // Tolak unduhan yang mencurigakan (0 byte / terlalu kecil) agar
+            // Tolak unduhan yang mencurigakan (0 byte / terlalu kecil / bukan PE) agar
             // exe yang sehat tidak pernah digantikan file korup.
+            fs.Position = 0;
+            var hdr = new byte[2];
+            if (fs.Read(hdr, 0, 2) != 2 || hdr[0] != (byte)'M' || hdr[1] != (byte)'Z')
+                return null;
             return fs.Length > 200_000 ? dest : null;
         }
         catch { return null; }
+    }
+
+    /// <summary>
+    /// Smoke-test build baru SEBELUM menimpa: jalankan exe dalam mode
+    /// ALLSENSE_SMOKE_TEST (App.xaml.cs membangun window WPF lalu keluar 0).
+    /// Tangkap kegagalan boot (mis. CultureNotFoundException font cache
+    /// InvariantGlobalization) yang membuat window tak pernah muncul.
+    /// </summary>
+    public static async Task<bool> SmokeTestAsync(string exePath)
+    {
+        try
+        {
+            var psi = new ProcessStartInfo(exePath)
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            psi.Environment[App.SmokeEnv] = "1";
+            var p = Process.Start(psi);
+            if (p is null) return false;
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            try { await p.WaitForExitAsync(cts.Token); }
+            catch (OperationCanceledException)
+            {
+                try { p.Kill(true); } catch { }
+                return false;
+            }
+            return p.ExitCode == 0;
+        }
+        catch { return false; }
     }
 
     /// <summary>Cek bisa menulis di lokasi exe berjalan (dibutuhkan tuk ganti diri sendiri).</summary>
@@ -116,18 +152,26 @@ public static class Updater
             ?? throw new InvalidOperationException("Tidak dapat menentukan lokasi exe.");
         var dir = Path.Combine(App.LocalDir, "update");
         var script = Path.Combine(dir, "apply-update.cmd");
+        var backup = Path.Combine(dir, "AllSense.previous.exe");
 
+        // backup sebelum timpa; tulis ke DST%.new (volume sama dgn DST) lalu
+        // rename (atomic). Jika gagal menulis di folder instal, exit tanpa timpa.
         File.WriteAllText(script,
             "@echo off\r\n" +
             "set \"SRC=" + downloadedExe + "\"\r\n" +
             "set \"DST=" + app + "\"\r\n" +
+            "set \"BAK=" + backup + "\"\r\n" +
             ":wait\r\n" +
             "tasklist /FI \"IMAGENAME eq AllSense.exe\" | find /I \"AllSense.exe\" >nul && (\r\n" +
             "  ping -n 2 127.0.0.1 >nul\r\n" +
             "  goto wait\r\n" +
             ")\r\n" +
-            "move /y \"%SRC%\" \"%DST%\"\r\n" +
+            "copy /y \"%DST%\" \"%BAK%\" >nul\r\n" +
+            "copy /y \"%SRC%\" \"%DST%.new\" >nul\r\n" +
             "if errorlevel 1 exit /b 1\r\n" +
+            "move /y \"%DST%.new\" \"%DST%\" >nul\r\n" +
+            "if errorlevel 1 exit /b 1\r\n" +
+            "del /q \"%SRC%\"\r\n" +
             "start \"\" \"%DST%\"\r\n" +
             "del /q \"" + script + "\"\r\n");
         return script;
