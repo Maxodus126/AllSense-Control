@@ -111,6 +111,9 @@ public partial class MainWindow : Window
         RefreshHardwareState();
         InitSystemFeatures();
 
+        // Logoff/shutdown: jangan tahan (izinkan app keluar), beda dengan X biasa.
+        System.Windows.Application.Current.SessionEnding += (_, _) => _quitRequested = true;
+
         Loaded += (_, _) =>
         {
             _hWnd = new WindowInteropHelper(this).Handle;

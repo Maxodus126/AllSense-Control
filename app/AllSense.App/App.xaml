@@ -36,5 +36,43 @@
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="13"/>
         </Style>
+
+        <!-- CheckBox tema gelap (kustom, konsisten dgn panel) -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Border x:Name="box" Width="18" Height="18" CornerRadius="5"
+                                    Background="{StaticResource Panel2Brush}"
+                                    BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
+                                    VerticalAlignment="Center">
+                                <Path x:Name="check" Data="M4 9.5l3.5 3.5L14 6"
+                                      Stroke="{StaticResource GreenBrush}" StrokeThickness="2.2"
+                                      StrokeLineJoin="Round" StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round" Opacity="0" Stretch="Uniform" Margin="3.5"/>
+                            </Border>
+                            <ContentPresenter Margin="9,0,0,0" VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="box" Property="Background" Value="#2635C973"/>
+                                <Setter TargetName="box" Property="BorderBrush" Value="#5935C973"/>
+                                <Setter TargetName="check" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="box" Property="BorderBrush" Value="#99FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

@@ -595,36 +595,36 @@
                                 <StackPanel Margin="0,0,0,4">
                                     <TextBlock Text="Preset cepat (untuk Buka/Tutup)" FontSize="9.5"
                                                Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                    <StackPanel Orientation="Horizontal">
+                                    <WrapPanel>
                                         <Border Tag="ctrl+alt+a" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="TogglePreset_Click">
                                             <TextBlock Text="Ctrl+Alt+A" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="ctrl+shift+a" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="TogglePreset_Click">
                                             <TextBlock Text="Ctrl+Shift+A" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="alt+home" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="TogglePreset_Click">
                                             <TextBlock Text="Alt+Home" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="ctrl+f11" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,0,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="TogglePreset_Click">
                                             <TextBlock Text="Ctrl+F11" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
-                                    </StackPanel>
+                                    </WrapPanel>
                                 </StackPanel>
 
                                 <Grid Margin="0,6,0,0">
@@ -661,36 +661,36 @@
                                 <StackPanel Margin="0,0,0,18">
                                     <TextBlock Text="Preset cepat (untuk Ganti mode)" FontSize="9.5"
                                                Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                    <StackPanel Orientation="Horizontal">
+                                    <WrapPanel>
                                         <Border Tag="ctrl+shift+p" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="CyclePreset_Click">
                                             <TextBlock Text="Ctrl+Shift+P" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="alt+end" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="CyclePreset_Click">
                                             <TextBlock Text="Alt+End" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="ctrl+f9" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,0" Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="CyclePreset_Click">
                                             <TextBlock Text="Ctrl+F9" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
                                         <Border Tag="ctrl+alt+t" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Background="{StaticResource PanelBrush}"
+                                                Margin="0,0,0,4" Background="{StaticResource PanelBrush}"
                                                 BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                                 MouseLeftButtonDown="CyclePreset_Click">
                                             <TextBlock Text="Ctrl+Alt+T" FontSize="10" FontFamily="Consolas"
                                                        Foreground="{StaticResource MutedBrush}"/>
                                         </Border>
-                                    </StackPanel>
+                                    </WrapPanel>
                                 </StackPanel>
 
                                 <Grid Margin="0,8,0,0">
