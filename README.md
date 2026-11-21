@@ -104,12 +104,19 @@ Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul �
 
 ## Tampilan
 
-| Pratinjau | Demo interaktif |
-|---|---|
-| ![Tampilan AllSense](docs/screenshot.png) | [app-demo.html](docs/app-demo.html) |
-| [Situs produk](https://maxodus126.github.io/AllSense-Control/) | — |
+<div align="center">
+
+| | | |
+|---|---|---|
+| ![Panel utama](docs/assets/img/full.png) | ![Mode daya &amp; status perangkat](docs/assets/img/full2.png) | ![Detail panel](docs/assets/img/full3.png) |
+| ![Slider kecerahan/volume](docs/assets/img/shot1.png) | ![Status Wi-Fi / Bluetooth](docs/assets/img/shot3.png) | ![Pengaturan](docs/assets/img/shot-sheet.png) |
+
+</div>
 
 OSD `HEMAT` / `BALANCED` / `TURBO` muncul tiap pergantian mode daya.
+
+- 🖥️ [Demo interaktif antarmuka](docs/app-demo.html)
+- 🌐 [Situs produk](https://maxodus126.github.io/AllSense-Control/)
 
 ---
 

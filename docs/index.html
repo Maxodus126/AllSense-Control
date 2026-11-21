@@ -205,6 +205,14 @@
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1)}
   .reveal.in{opacity:1;transform:none}
 
+  /* ── screenshot gallery ── */
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .shot{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .18s,border-color .18s,box-shadow .18s}
+  .shot:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:0 22px 50px rgba(0,0,0,.5)}
+  .shot img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#0a0c11}
+  .shot figcaption{padding:12px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);font-family:var(--font-m)}
+
   /* ── responsive ── */
   @media (max-width:960px){
     .hero,.two{grid-template-columns:1fr}
@@ -243,6 +251,7 @@
       <a href="#demo">Demo</a>
       <a href="#fitur">Fitur</a>
       <a href="#mode">Power Mode</a>
+      <a href="#tangkapan">Screenshot</a>
       <a href="#shortcut">Shortcut</a>
       <a href="https://github.com/Maxodus126/AllSense-Control">GitHub</a>
       <a class="nav-cta" href="https://github.com/Maxodus126/AllSense-Control/releases/latest/download/AllSense.setup.exe">Unduh</a>
@@ -253,7 +262,7 @@
 <!-- ===== HERO ===== -->
 <header class="hero wrap">
   <div>
-    <span class="eyebrow"><span class="pulse"></span> v1.0.7 · siap unduh</span>
+    <span class="eyebrow"><span class="pulse"></span> v2.0.1 · siap unduh</span>
     <h1>Kendalikan <span class="grad-text">daya</span><br>laptopmu.</h1>
     <p class="sub">AllSense Control — panel ringkas untuk kecerahan, volume, dan mode daya Windows. Universal, tanpa admin, tanpa driver vendor, dengan OSD ala laptop gaming.</p>
     <p class="sub" style="margin-top:6px;opacity:.75">Rilis unduhan diproduksi otomatis oleh GitHub Actions — selalu versi terbaru.</p>
@@ -320,6 +329,25 @@
       <div class="feat tint-green reveal"><div class="fic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M21.5 12h-2.4M4.9 12H2.5M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7M18.8 18.8l-1.7-1.7M6.9 6.9 5.2 5.2"/></svg></div><h3>Kecerahan &amp; Volume</h3><p>Slider menyinkronkan kondisi asli perangkat, ikut Fn/OS.</p></div>
       <div class="feat tint-blue reveal"><div class="fic"><svg viewBox="0 0 24 24"><path d="M2.5 8.5a15 15 0 0 1 19 0M5.5 12a11 11 0 0 1 13 0M8.5 15.5a7 7 0 0 1 7 0"/><circle cx="12" cy="19" r="1.3" fill="currentColor" stroke="none"/></svg></div><h3>Wi-Fi &amp; Bluetooth</h3><p>Indikator hidup/mati radio langsung dari Windows.</p></div>
       <div class="feat tint-amber reveal"><div class="fic"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M8.5 14h7"/></svg></div><h3>Hotkey Kustom</h3><p>Ketik atau rekam kombinasi sendiri; tersimpan permanen.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TANGKAPAN LAYAR ===== -->
+<section class="sect" id="tangkapan">
+  <div class="wrap">
+    <div class="sect-head center reveal">
+      <div class="kicker">Tangkapan layar</div>
+      <h2>Tampilan aslinya.</h2>
+      <p>Panel utama, sheet pengaturan, dan status perangkat saat berjalan di Windows.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot reveal"><img src="assets/img/full.png" alt="Panel utama AllSense Control" loading="lazy"><figcaption>Panel utama</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/img/full2.png" alt="Mode daya &amp; status perangkat" loading="lazy"><figcaption>Mode daya &amp; status perangkat</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/img/full3.png" alt="Tampilan detail panel" loading="lazy"><figcaption>Detail panel</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/img/shot1.png" alt="Interaksi slider kecerahan/volume" loading="lazy"><figcaption>Slider kecerahan / volume</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/img/shot3.png" alt="Status Wi-Fi dan Bluetooth" loading="lazy"><figcaption>Status Wi-Fi / Bluetooth</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/img/shot-sheet.png" alt="Sheet pengaturan" loading="lazy"><figcaption>Pengaturan</figcaption></figure>
     </div>
   </div>
 </section>
@@ -405,7 +433,7 @@
       </div>
     </div>
     <div class="bottom">
-      <span>© 2026 Maxodus · AllSense Control v1.0.7</span>
+      <span>© 2026 Maxodus · AllSense Control v2.0.1</span>
       <span>Universal · bertenaga daya Windows · tanpa driver vendor</span>
     </div>
   </div>
