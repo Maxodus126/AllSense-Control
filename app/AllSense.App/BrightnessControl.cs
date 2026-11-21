@@ -12,6 +12,7 @@ public static class BrightnessControl
     private static int? _curCache;
     private static long _curCacheTick;
     private static readonly object _cacheGate = new();
+    private const int CacheTtlMs = 6000;
 
     private static void Ensure()
     {
@@ -47,7 +48,7 @@ public static class BrightnessControl
         var now = Environment.TickCount64;
         lock (_cacheGate)
         {
-            if (_curCache.HasValue && now - _curCacheTick < 6000)
+            if (_curCache.HasValue && now - _curCacheTick < CacheTtlMs)
                 return _curCache;
             var r = QueryCurrent();
             _curCacheTick = now;

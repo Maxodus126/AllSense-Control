@@ -131,9 +131,31 @@ public partial class MainWindow : Window
         {
             InstallProgress.Value = 0;
             InstallStatus.Text = "";
-            StepMsg.Text = "Gagal memasang: " + ex.Message;
+            var hint = IsAdminPath(dest)
+                ? "\n\nFolder ini butuh izin administrator — pilih folder per-user (mis. %LOCALAPPDATA%\\Programs) atau jalankan setup sebagai administrator."
+                : "";
+            StepMsg.Text = "Gagal memasang: " + ex.Message + hint;
             return false;
         }
+    }
+
+    /// <summary>Deteksi path yang biasanya butuh admin (Program Files / Windows / root drive).</summary>
+    private static bool IsAdminPath(string dest)
+    {
+        try
+        {
+            var root = Path.GetPathRoot(dest)?.TrimEnd('\\', '/') ?? "";
+            var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var pfX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var sys = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+            if (dest.IndexOf(pf, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (!string.IsNullOrEmpty(pfX86) && dest.IndexOf(pfX86, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (dest.IndexOf(sys, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            // root drive (mis. C:\...)
+            if (root.Length >= 2 && dest.Equals(root, StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
+        }
+        catch { return false; }
     }
 
     private static void RegisterUninstall(string target, string uninstTarget, string installDir)

@@ -38,6 +38,13 @@ public partial class MainWindow : Window
     private bool _checking;
     private (bool ac, int pct) _lastBatt = (false, -2); // -2 = belum pernah
 
+    // Konstanta interval di-tick (ms / tick units) — jangan angka ajaib tersebar.
+    private const int PollIntervalMs = 2000;          // timer utama
+    private const int RadioEveryTicks = 15;           // tiap 15×2 dtk = 30 dtk, saat visible
+    private const int HardwareThrottleTicks = 3;      // brightness WMI tiap ~6 dtk
+    private const int BatteryToastMs = 4000;          // durasi toast baterai rendah
+    private const int SaveDebounceMs = 400;           // debounce simpan config
+
     private static readonly (int Mods, int Vk)[] ToggleFallback =
     {
         (NativeInterop.MOD_CONTROL | NativeInterop.MOD_ALT, (int)NativeInterop.VK_A),
@@ -109,27 +116,16 @@ public partial class MainWindow : Window
         if (cur.HasValue) _mode = cur.Value;
         ApplyModeVisual();
 
-        // Refleksikan kondisi aktual hardware; jangan paksa. Terapkan hanya saat user menggeser.
-        var bright = BrightnessControl.Current() ?? _settings.Brightness;
-        BrightSlider.Value = Math.Clamp(bright, BrightSlider.Minimum, BrightSlider.Maximum);
-        if (VolumeControl.GetState() is var vs && vs.Available)
-        {
-            VolSlider.Value = Math.Clamp(vs.Level * 100d, VolSlider.Minimum, VolSlider.Maximum);
-            MuteTog.IsChecked = vs.Mute;
-        }
-        else
-        {
-            VolSlider.Value = Math.Clamp(_settings.Volume, VolSlider.Minimum, VolSlider.Maximum);
-            MuteTog.IsChecked = _settings.Mute;
-        }
+        // Muat nilai default dari config dulu (instan), lalu sinkronkan ke hardware
+        // secara async setelah window tampil — supaya panel tidak terasa "menunggu".
+        BrightSlider.Value = Math.Clamp(_settings.Brightness, BrightSlider.Minimum, BrightSlider.Maximum);
+        VolSlider.Value = Math.Clamp(_settings.Volume, VolSlider.Minimum, VolSlider.Maximum);
+        MuteTog.IsChecked = _settings.Mute;
         _suppressApply = false;
-
-        InitRadios();
-        UpdateScreenInfo();
 
         DragBar.MouseLeftButtonDown += (_, e) => { if (e.ButtonState == MouseButtonState.Pressed) DragMove(); };
 
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(PollIntervalMs) };
         _timer.Tick += (_, _) =>
         {
             // Baterai wajib selalu dicek (peringatan rendah tetap aktif walau window di-tray).
@@ -138,14 +134,13 @@ public partial class MainWindow : Window
             // Bila disembunyikan, tidak ada polling radio/hardware sama sekali → RAM & CPU hemat.
             if (Visibility != Visibility.Visible) return;
             // Radio (Wi-Fi/BT) di-update tiap 30 dtk: user/OS bisa mengubah status tanpa panel restart.
-            if (++_tickCounter % 15 == 0) _ = LoadRadiosAsync();
+            if (++_tickCounter % RadioEveryTicks == 0) _ = LoadRadiosAsync();
             RefreshHardwareState();
         };
         _timer.Start();
-        _saveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _saveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(SaveDebounceMs) };
         _saveTimer.Tick += (_, _) => { _saveTimer.Stop(); if (_settingsDirty) { _settingsDirty = false; _settings.Save(); } };
-        RefreshBattery();
-        RefreshHardwareState();
+        RefreshBattery(); // murah (GetSystemPowerStatus); wajib langsung utk peringatan
         InitSystemFeatures();
 
         // Logoff/shutdown: jangan tahan (izinkan app keluar), beda dengan X biasa.
@@ -163,6 +158,15 @@ public partial class MainWindow : Window
             src.AddHook(WndProc);
             UpdateBehaviorUI();
             _ = AutoCheckUpdate();
+
+            // Setelah frame pertama tampil, baru probe hardware (WMI/NAudio/WinRT):
+            // window muncul instan, slider menyusul sinkron dengan kondisi asli.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UpdateScreenInfo();
+                InitRadios();
+                RefreshHardwareState();
+            }), DispatcherPriority.Background);
 
             // Bangunkan dari instance kedua (double-click exe/launcher) walau window di-tray.
             _wake = new EventWaitHandle(false, EventResetMode.AutoReset, "AllSense.ShowWindow");
@@ -209,11 +213,15 @@ public partial class MainWindow : Window
     /// <summary>Satu pintu keluar untuk ganti mode + simpan + visual + OSD.</summary>
     private void SetMode(PowerMode m, bool manual = false)
     {
+        if (_mode == m && !manual) return;
         _mode = m;
         _settings.PowerMode = m.ToString();
         _settings.Save();
         ApplyModeVisual();
-        PowerControl.Apply(m);
+        var ok = PowerControl.Apply(m);
+        App.LogOp($"Mode daya -> {m} ({(ok ? "ok" : "gagal")})");
+        if (!ok)
+            UpStatus.Text = "Peringatan: mode daya gagal diterapkan di perangkat ini.";
         (_osd ??= new ModeOsd()).Show(m);
         if (manual && !NativeInterop.GetPowerStatus().onAc)
             _restoreOnAc = null; // pilihan manual di baterai mengalahkan auto-restore
@@ -233,9 +241,19 @@ public partial class MainWindow : Window
         _tray = new TrayIcon
         {
             ToggleWindow = () => Dispatcher.Invoke(ToggleWindow),
-            ExitApp = () => Dispatcher.Invoke(() => { _quitRequested = true; Close(); }),
+            ExitApp = () => Dispatcher.Invoke(ConfirmExit),
             CycleMode = () => Dispatcher.Invoke(CycleMode),
         };
+    }
+
+    /// <summary>Keluar dari tray dengan konfirmasi (aplikasi selalu hidup, cegah salah klik).</summary>
+    private void ConfirmExit()
+    {
+        var r = MessageBox.Show("Keluar dari AllSense Control?\nHotkey dan panel akan berhenti aktif.",
+            "AllSense Control", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (r != MessageBoxResult.Yes) return;
+        _quitRequested = true;
+        Close();
     }
 
     private void ToggleWindow()
@@ -337,6 +355,9 @@ public partial class MainWindow : Window
         dot.Fill = active ? Green : Dim;
         st.Foreground = active ? Green : Dim;
         st.Text = unknown ? "?" : (active ? "ON" : "OFF");
+        card.ToolTip = unknown
+            ? "Radio tidak tersedia / status tidak dapat dibaca di perangkat ini."
+            : (active ? "Aktif" : "Mati");
     }
 
     // ---------- screen ----------
@@ -404,7 +425,7 @@ public partial class MainWindow : Window
         t.Show();
         _ = Task.Run(async () =>
         {
-            await Task.Delay(4000);
+            await Task.Delay(BatteryToastMs);
             try
             {
                 if (System.Windows.Application.Current is not null)
@@ -427,7 +448,7 @@ public partial class MainWindow : Window
         _syncBusy = true;
         try
         {
-            var doBright = ++_hwCounter % 3 == 0; // throttle WMI brightness tiap ~6 detik
+            var doBright = ++_hwCounter % HardwareThrottleTicks == 0; // throttle WMI brightness tiap ~6 detik
             var snap = await Task.Run(() =>
             {
                 int? b = null;
@@ -601,6 +622,7 @@ public partial class MainWindow : Window
         try
         {
             var up = await Task.Run(() => Updater.CheckAsync());
+            App.LogOp(up is null ? "Cek update: tidak ada respons" : $"Cek update: rilis {up.Version}");
             if (up is not null && Updater.IsNewer(up.Version) && _pending is null)
             {
                 _pending = up;
@@ -824,6 +846,7 @@ public partial class MainWindow : Window
     private void TryBindNew(int id, int mods, int vk)
     {
         if (mods == 0) { _awaitingHotKey = id; UpStatus.Text = "Perlu Ctrl/Alt/Shift + tombol."; return; }
+        if (vk <= 0 || vk >= 0xE0) { _awaitingHotKey = id; UpStatus.Text = "Kombinasi tidak valid."; return; }
         if (_hWnd != IntPtr.Zero) NativeInterop.UnregisterHotKey(_hWnd, id);
         if (NativeInterop.RegisterHotKey(_hWnd, id, (uint)mods, (uint)vk))
         {

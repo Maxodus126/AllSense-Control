@@ -21,18 +21,38 @@ public static class Updater
     private const string Repo = "Maxodus126/AllSense-Control";
     private const string LatestUrl = $"https://api.github.com/repos/{Repo}/releases/latest";
 
+    private const long MinExeBytes = 200_000; // ambang minimum exe yang wajar (tolak file korup)
+
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };
     private static readonly JsonDocumentOptions JsonOpts = new() { AllowTrailingCommas = true };
+
+    /// <summary>GET dengan retry/backoff singkat untuk gangguan jaringan sesaat.</summary>
+    private static async Task<HttpResponseMessage?> GetWithRetryAsync(string url)
+    {
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            try
+            {
+                using var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.UserAgent.ParseAdd("AllSense-Control/1.0");
+                var resp = await Http.SendAsync(req);
+                if (resp.IsSuccessStatusCode) return resp;
+                resp.Dispose();
+                if ((int)resp.StatusCode < 500) return null; // 4xx: tidak perlu retry
+            }
+            catch { }
+            if (attempt < 2) await Task.Delay(400 * (attempt + 1));
+        }
+        return null;
+    }
 
     /// <summary>Ambil info rilis terbaru dari GitHub. Tag vX.Y.Z + asset payload AllSense.exe.</summary>
     public static async Task<UpdateInfo?> CheckAsync()
     {
         try
         {
-            using var req = new HttpRequestMessage(HttpMethod.Get, LatestUrl);
-            req.Headers.UserAgent.ParseAdd("AllSense-Control/1.0");
-            using var r = await Http.SendAsync(req);
-            if (!r.IsSuccessStatusCode) return null;
+            using var r = await GetWithRetryAsync(LatestUrl);
+            if (r is null) return null;
             using var doc = JsonDocument.Parse(await r.Content.ReadAsStringAsync(), JsonOpts);
             var root = doc.RootElement;
 
@@ -128,7 +148,7 @@ public static class Updater
                 try
                 {
                     using var check = File.OpenRead(dest);
-                    if (check.Length <= 200_000) return false;
+                    if (check.Length <= MinExeBytes) return false;
                     var hdr = new byte[2];
                     if (check.Read(hdr, 0, 2) != 2 || hdr[0] != (byte)'M' || hdr[1] != (byte)'Z')
                         return false;
@@ -217,6 +237,8 @@ public static class Updater
 
         // backup sebelum timpa; tulis ke DST%.new (volume sama dgn DST) lalu
         // rename (atomic). Jika gagal menulis di folder instal, exit tanpa timpa.
+        // Rollback: setelah start, tunggu ~6 dtk; bila proses baru mati (gagal boot),
+        // pulihkan backup dan jalankan versi lama agar app tidak "mati" pasca-update.
         File.WriteAllText(script,
             "@echo off\r\n" +
             "set \"SRC=" + src + "\"\r\n" +
@@ -234,6 +256,11 @@ public static class Updater
             "if errorlevel 1 exit /b 1\r\n" +
             "del /q \"%SRC%\"\r\n" +
             "start \"\" \"%DST%\"\r\n" +
+            "ping -n 7 127.0.0.1 >nul\r\n" +
+            "tasklist /FI \"IMAGENAME eq AllSense.exe\" | find /I \"AllSense.exe\" >nul || (\r\n" +
+            "  copy /y \"%BAK%\" \"%DST%\" >nul\r\n" +
+            "  start \"\" \"%DST%\"\r\n" +
+            ")\r\n" +
             "del /q \"" + scr + "\"\r\n");
         return script;
     }

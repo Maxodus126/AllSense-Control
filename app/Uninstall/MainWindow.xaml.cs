@@ -16,6 +16,12 @@ public partial class MainWindow : Window
 
     private void Go_Click(object sender, RoutedEventArgs e)
     {
+        // Konfirmasi final: tindakan tidak bisa dibatalkan.
+        var confirm = System.Windows.MessageBox.Show(
+            "Yakin ingin menghapus AllSense Control sepenuhnya?\nIni tidak dapat dibatalkan.",
+            "AllSense Uninstall", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+        if (confirm != System.Windows.MessageBoxResult.Yes) return;
+
         // cleanup sinkron, lalu self-delete via batch tertunda
         try
         {

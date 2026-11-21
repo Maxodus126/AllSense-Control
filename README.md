@@ -176,6 +176,11 @@ README.md                 # kamu di sini 👀
 ### 🤖 Rilis otomatis
 Tag `v*` → GitHub Actions membangun dan mengunggah **`AllSense.setup.exe`** + **`AllSense.exe`** ke Release. Situs otomatis menunjuk ke `releases/latest` — tanpa sentuh HTML.
 
+### 🧪 Self-test & diagnosis
+- `AllSense.exe --selftest` → memvalidasi logika inti (parsing versi, mapping GUID mode daya, sanitasi config, round-trip) tanpa UI; exit `0` bila lolos, `1` bila gagal. Dipakai CI untuk verifikasi cepat.
+- Log operasional: `%APPDATA%\AllSense\op.log` (mode diterapkan, cek update, dll).
+- Crash log: `%APPDATA%\AllSense\crash.log` (dirotasi otomatis >512 KB).
+
 ---
 
 ## Roadmap

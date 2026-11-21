@@ -10,6 +10,17 @@ public partial class App : System.Windows.Application
     public static readonly string LocalDir =
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AllSense");
 
+    /// <summary>Log operasional ber-stempel waktu (mode diterapkan, update, error tak fatal).</summary>
+    public static void LogOp(string message)
+    {
+        try
+        {
+            File.AppendAllText(Path.Combine(LocalDir, "op.log"),
+                $"[{DateTime.Now:u}] {message}\n");
+        }
+        catch { }
+    }
+
     private static Mutex? _mutex;
     private static bool _ownsMutex;
 
@@ -18,6 +29,13 @@ public partial class App : System.Windows.Application
 
     protected override void OnStartup(System.Windows.StartupEventArgs e)
     {
+        // Mode self-test logika murni (dipakai CI / diagnosis): `AllSense.exe --selftest`.
+        if (e.Args.Length > 0 && e.Args[0].Equals("--selftest", StringComparison.OrdinalIgnoreCase))
+        {
+            Shutdown(Selftest.Run());
+            return;
+        }
+
         // Mode smoke-test (dipakai Updater sebelum menimpa exe):
         // verifikasi bootstrap WPF (font cache/ICU) sembuh TANPA side-effect
         // hardware/tray/hotkey. Keluar 0 bila window bisa dibangun, 3 bila crash.
@@ -97,8 +115,10 @@ public partial class App : System.Windows.Application
     {
         try
         {
-            File.AppendAllText(Path.Combine(LocalDir, "crash.log"),
-                $"[{DateTime.Now:u}] {e.Exception}\n\n");
+            var log = Path.Combine(LocalDir, "crash.log");
+            // Rotasi: jangan biarkan crash.log tumbuh tanpa batas.
+            try { if (File.Exists(log) && new FileInfo(log).Length > 512 * 1024) File.Delete(log); } catch { }
+            File.AppendAllText(log, $"[{DateTime.Now:u}] {e.Exception}\n\n");
         }
         catch { }
         // Jangan telan hening: kegagalan dahulu (font-cache) tertutup oleh Handled=true

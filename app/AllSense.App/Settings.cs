@@ -5,6 +5,9 @@ namespace AllSense;
 
 public sealed class UserSettings
 {
+    /// <summary>Versi skema config; memungkinkan migrasi di masa depan.</summary>
+    public int ConfigVersion { get; set; } = 1;
+
     public string PowerMode { get; set; } = "balanced";
     public int Brightness { get; set; } = 75;
     public int Volume { get; set; } = 65;
@@ -21,13 +24,23 @@ public sealed class UserSettings
 
     public static UserSettings Load()
     {
+        UserSettings s;
         try
         {
-            if (File.Exists(Path))
-                return JsonSerializer.Deserialize<UserSettings>(File.ReadAllText(Path)) ?? new UserSettings();
+            if (!File.Exists(Path)) return new UserSettings();
+            s = JsonSerializer.Deserialize<UserSettings>(File.ReadAllText(Path)) ?? new UserSettings();
         }
-        catch { }
-        return new UserSettings();
+        catch { return new UserSettings(); }
+
+        // Sanitasi: config rusak/aneh tidak boleh membuat app crash atau nilai mustahil.
+        s.ConfigVersion = Math.Max(1, s.ConfigVersion);
+        s.Brightness = Math.Clamp(s.Brightness, 0, 100);
+        s.Volume = Math.Clamp(s.Volume, 0, 100);
+        s.LowBatteryThreshold = Math.Clamp(s.LowBatteryThreshold, 5, 100);
+        if (string.IsNullOrWhiteSpace(s.PowerMode)) s.PowerMode = "balanced";
+        if (string.IsNullOrWhiteSpace(s.HotkeyToggle)) s.HotkeyToggle = "Ctrl+Alt+A";
+        if (string.IsNullOrWhiteSpace(s.HotkeyCycle)) s.HotkeyCycle = "Ctrl+Alt+M";
+        return s;
     }
 
     public void Save()

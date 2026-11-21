@@ -46,6 +46,11 @@ jobs:
       - name: Build Installer
         run: dotnet build app/Installer/Installer.csproj -c Release --nologo
 
+      - name: Run self-test (logika inti)
+        run: |
+          dotnet publish app/AllSense.App/AllSense.App.csproj -c Release --no-build --nologo -o publish/selftest
+          publish/selftest/AllSense.exe --selftest
+
       - name: Upload AllSense artifact
         uses: actions/upload-artifact@v4
         with:
