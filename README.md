@@ -28,7 +28,7 @@ Kecerahan · Volume · Mode daya · Hotkey global · Self-update otomatis
 
 <br>
 
-<img src="docs/screenshot.png" alt="AllSense Control — panel" width="460" style="border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);">
+<img src="docs/assets/img/1.png" alt="AllSense Control — panel" width="460" style="border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);">
 
 <br>
 
@@ -106,20 +106,8 @@ Aplikasi cek rilis terbaru saat mulai → ada versi baru, tombol unduh muncul �
 
 <div align="center">
 
-<img src="docs/assets/img/full.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/full2.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/full3.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/shot1.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/shot3.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/shot-sheet.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/shot-sheet2.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live1.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live2.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live3.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live5.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live8.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live10.png" alt="Screenshot" width="230">
-<img src="docs/assets/img/live12.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/1.png" alt="Screenshot 1" width="420">
+<img src="docs/assets/img/2.png" alt="Screenshot 2" width="420">
 
 </div>
 
