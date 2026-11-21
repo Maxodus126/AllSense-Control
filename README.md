@@ -106,10 +106,20 @@ Aplikasi cek rilis terbaru saat mulai â†’ ada versi baru, tombol unduh muncul â†
 
 <div align="center">
 
-| | | |
-|---|---|---|
-| ![Panel utama](docs/assets/img/full.png) | ![Mode daya &amp; status perangkat](docs/assets/img/full2.png) | ![Detail panel](docs/assets/img/full3.png) |
-| ![Slider kecerahan/volume](docs/assets/img/shot1.png) | ![Status Wi-Fi / Bluetooth](docs/assets/img/shot3.png) | ![Pengaturan](docs/assets/img/shot-sheet.png) |
+<img src="docs/assets/img/full.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/full2.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/full3.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/shot1.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/shot3.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/shot-sheet.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/shot-sheet2.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live1.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live2.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live3.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live5.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live8.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live10.png" alt="Screenshot" width="230">
+<img src="docs/assets/img/live12.png" alt="Screenshot" width="230">
 
 </div>
 
