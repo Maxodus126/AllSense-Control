@@ -1,8 +1,10 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace AllSenseSetup;
@@ -19,12 +21,27 @@ public partial class MainWindow : Window
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Programs", "AllSense");
         UpdateInstallState();
+        ShowStep(StepLicense);
     }
 
-    private void UpdateInstallState() =>
-        InstallBtn.IsEnabled = LicenseCheck.IsChecked == true;
+    // ---------- navigasi wizard ----------
+    private void ShowStep(UIElement step)
+    {
+        StepLicense.Visibility = ReferenceEquals(step, StepLicense) ? Visibility.Visible : Visibility.Collapsed;
+        StepConfirm.Visibility = ReferenceEquals(step, StepConfirm) ? Visibility.Visible : Visibility.Collapsed;
+        StepProgress.Visibility = ReferenceEquals(step, StepProgress) ? Visibility.Visible : Visibility.Collapsed;
+        StepDone.Visibility = ReferenceEquals(step, StepDone) ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void UpdateInstallState()
+    {
+        StepMsg.Text = "";
+        UpStatus.Text = "";
+        NextBtn.IsEnabled = LicenseCheck.IsChecked == true && !string.IsNullOrWhiteSpace(PathBox.Text);
+    }
 
     private void License_Changed(object sender, RoutedEventArgs e) => UpdateInstallState();
+    private void PathBox_TextChanged(object sender, TextChangedEventArgs e) => UpdateInstallState();
 
     private void Browse_Click(object sender, RoutedEventArgs e)
     {
@@ -33,33 +50,32 @@ public partial class MainWindow : Window
             PathBox.Text = dlg.FolderName;
     }
 
-    private void Install_Click(object sender, RoutedEventArgs e)
+    private void Next_Click(object sender, RoutedEventArgs e)
     {
         var dest = PathBox.Text.Trim();
         if (dest.Length == 0)
         {
-            Status.Text = "Pilih lokasi instalasi dulu.";
+            UpStatus.Text = "Pilih lokasi instalasi dulu.";
             return;
         }
         ConfirmPath.Text = dest;
-        ConfirmOverlay.Visibility = Visibility.Visible;
+        ShowStep(StepConfirm);
     }
 
-    private void CancelConfirm_Click(object sender, RoutedEventArgs e) =>
-        ConfirmOverlay.Visibility = Visibility.Collapsed;
+    private void Back_Click(object sender, RoutedEventArgs e) => ShowStep(StepLicense);
+    private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
 
     private async void GoInstall_Click(object sender, RoutedEventArgs e)
     {
-        ConfirmOverlay.Visibility = Visibility.Collapsed;
-        await DoInstall(PathBox.Text.Trim());
+        ShowStep(StepProgress);
+        var ok = await DoInstall(PathBox.Text.Trim());
+        ShowStep(ok ? StepDone : StepConfirm);
     }
 
-    private async Task DoInstall(string dest)
+    private async Task<bool> DoInstall(string dest)
     {
-        InstallBtn.IsEnabled = false;
-        Progress.Visibility = Visibility.Visible;
-        Progress.Value = 0;
-
+        InstallProgress.Value = 0;
+        InstallStatus.Text = "";
         try
         {
             Directory.CreateDirectory(dest);
@@ -75,7 +91,7 @@ public partial class MainWindow : Window
                     try
                     {
                         p.Kill();
-                        p.WaitForExit(5000);
+                        if (!p.WaitForExit(5000)) continue;
                     }
                     catch { }
                     finally { p.Dispose(); }
@@ -83,36 +99,40 @@ public partial class MainWindow : Window
             }
             catch { }
 
-            Progress.Value = 25;
-            File.WriteAllBytes(target, GetPayloadBytes());
-            Progress.Value = 60;
+            InstallProgress.Value = 25;
+            InstallStatus.Text = "Menyalin file aplikasi…";
+            await Task.Run(() => File.WriteAllBytes(target, GetPayloadBytes()));
+            InstallProgress.Value = 55;
 
             // shortcut desktop + start menu
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             var startMenu = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Programs), "AllSense Control.lnk");
-            CreateShortcut(Path.Combine(desktop, "AllSense Control.lnk"), target);
-            CreateShortcut(startMenu, target);
-            Progress.Value = 80;
+            await Task.Run(() =>
+            {
+                CreateShortcut(Path.Combine(desktop, "AllSense Control.lnk"), target);
+                CreateShortcut(startMenu, target);
+            });
+            InstallProgress.Value = 75;
+            InstallStatus.Text = "Menyertakan uninstaller…";
 
             // tulis uninstaller (berdiri sendiri, hapus semuanya termasuk dirinya)
             var uninstTarget = Path.Combine(dest, "Uninstall.exe");
-            File.WriteAllBytes(uninstTarget, GetUninstallPayloadBytes());
-            Progress.Value = 90;
+            await Task.Run(() => File.WriteAllBytes(uninstTarget, GetUninstallPayloadBytes()));
+            InstallProgress.Value = 88;
 
             // registrasi Uninstall di HKCU agar tampil di Windows Apps + Revo
             RegisterUninstall(target, uninstTarget, dest);
-            Progress.Value = 100;
-
-            Status.Text = "Selesai. AllSense Control terpasang.";
-            InstallBtn.Visibility = Visibility.Collapsed;
-            CloseBtn.Visibility = Visibility.Visible;
-            TryRun.Visibility = Visibility.Visible;
+            InstallProgress.Value = 100;
+            InstallStatus.Text = "Selesai.";
+            DoneStatus.Text = $"AllSense Control terpasang di\n{dest}";
+            return true;
         }
         catch (Exception ex)
         {
-            Status.Text = "Gagal: " + ex.Message;
-            InstallBtn.IsEnabled = true;
-            Progress.Visibility = Visibility.Collapsed;
+            InstallProgress.Value = 0;
+            InstallStatus.Text = "";
+            StepMsg.Text = "Gagal memasang: " + ex.Message;
+            return false;
         }
     }
 

@@ -17,9 +17,19 @@ public partial class MainWindow : Window
     private void Go_Click(object sender, RoutedEventArgs e)
     {
         // cleanup sinkron, lalu self-delete via batch tertunda
-        Uninstall();
-        ScheduleSelfDelete();
-        Close();
+        try
+        {
+            Uninstall();
+            CancelBtn.IsEnabled = false;
+            GoBtn.IsEnabled = false;
+            GoBtn.Content = "Menghapus…";
+            ScheduleSelfDelete();
+            Close();
+        }
+        catch (Exception ex)
+        {
+            Status.Text = "Gagal menghapus: " + ex.Message;
+        }
     }
 
     private static void Uninstall()
@@ -27,7 +37,10 @@ public partial class MainWindow : Window
         try
         {
             foreach (var p in Process.GetProcessesByName("AllSense"))
-                p.Kill();
+            {
+                try { p.Kill(); p.WaitForExit(5000); } catch { }
+                finally { p.Dispose(); }
+            }
         }
         catch { }
 
