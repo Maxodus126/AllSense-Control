@@ -91,7 +91,8 @@
   .frame .bar i{width:11px;height:11px;border-radius:50%;display:inline-block}
   .frame .bar .r{background:#ff5f57}.frame .bar .y{background:#febc2e}.frame .bar .g{background:#28c840}
   .frame .bar span{margin-left:auto;font-size:11.5px;color:var(--dim);font-family:var(--font-m)}
-  .frame .body{height:560px;background:#090b10}
+  .frame .body{height:560px;background:#090b10;padding:14px}
+  .frame .body img{width:100%;height:100%;object-fit:contain;display:block;border-radius:10px}
   .frame iframe{width:100%;height:100%;border:0;display:block}
   .float-chip{position:absolute;bottom:-22px;left:-16px;display:flex;align-items:center;gap:12px;
     background:rgba(13,16,23,.92);border:1px solid var(--line2);border-radius:15px;padding:11px 18px;
@@ -213,6 +214,15 @@
   .shot img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#0a0c11}
   .shot figcaption{padding:12px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);font-family:var(--font-m)}
 
+  /* ── showcase asli (2 screenshot) ── */
+  .showcase{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .sc{position:relative;background:var(--surface);border:1px solid var(--line2);border-radius:20px;overflow:hidden;
+    box-shadow:0 24px 60px rgba(0,0,0,.5);transition:transform .18s,border-color .18s,box-shadow .18s}
+  .sc:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.2);box-shadow:0 32px 70px rgba(0,0,0,.55)}
+  .sc img{width:100%;display:block;background:#0a0c11}
+  .sc figcaption{padding:14px 18px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);font-family:var(--font-m);letter-spacing:.4px}
+  @media (max-width:760px){ .showcase{grid-template-columns:1fr} }
+
   /* ── responsive ── */
   @media (max-width:960px){
     .hero,.two{grid-template-columns:1fr}
@@ -248,7 +258,7 @@
       AllSense Control
     </div>
     <div class="nav-links">
-      <a href="#demo">Demo</a>
+      <a href="#demo">Tampilan</a>
       <a href="#fitur">Fitur</a>
       <a href="#mode">Power Mode</a>
       <a href="#tangkapan">Screenshot</a>
@@ -282,8 +292,8 @@
   <div class="mock">
     <div class="glow-ring"></div>
     <div class="frame">
-      <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>AllSense Control — demo interaktif</span></div>
-      <div class="body"><iframe src="app-demo.html" title="Demo interaktif antarmuka AllSense Control" loading="lazy"></iframe></div>
+      <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>AllSense Control — Panel Utama</span></div>
+      <div class="body"><img src="assets/img/1.png" alt="Panel utama AllSense Control" loading="lazy"></div>
     </div>
     <div class="float-chip">
       <span class="chip-mark"><svg viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11L9.5 22 19.5 10H13L15.5 2Z"/></svg></span>
@@ -299,20 +309,17 @@
   <span><span class="dot"></span>Tanpa driver vendor</span>
 </div>
 
-<!-- ===== DEMO INTERAKTIF ===== -->
+<!-- ===== TAMPILAN ASLI ===== -->
 <section class="sect" id="demo">
   <div class="wrap">
     <div class="sect-head center reveal">
-      <div class="kicker">Demo langsung</div>
-      <h2>Coba sendiri, sekarang juga.</h2>
-      <p>Ini mockup interaktif dari antarmuka aslinya. Seret slider, klik toggle Wi-Fi/Bluetooth, dan ganti mode daya — persis seperti di aplikasi.</p>
+      <div class="kicker">Tampilan asli</div>
+      <h2>Seperti inilah ia bekerja.</h2>
+      <p>Tangkapan layar aplikasi asli saat berjalan di Windows — panel utama dan sheet pengaturan.</p>
     </div>
-    <div class="demo-stage reveal">
-      <div class="demo-head">
-        <span class="lbl">Aplikasi · mockup interaktif</span>
-        <span class="live"><span class="dot"></span>LIVE</span>
-      </div>
-      <div class="demo-frame"><iframe src="app-demo.html" title="Demo interaktif antarmuka AllSense Control"></iframe></div>
+    <div class="showcase">
+      <figure class="sc reveal"><img src="assets/img/1.png" alt="Panel utama AllSense Control"><figcaption>Panel Utama</figcaption></figure>
+      <figure class="sc reveal"><img src="assets/img/2.png" alt="Sheet pengaturan AllSense Control"><figcaption>Pengaturan</figcaption></figure>
     </div>
   </div>
 </section>
