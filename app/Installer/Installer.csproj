@@ -54,4 +54,12 @@
     </ProjectReference>
   </ItemGroup>
 
+  <!-- Gagal keras daripada diam-diam membuat installer tanpa payload. -->
+  <Target Name="GuardEmbeddedPayload" BeforeTargets="Build;Publish">
+    <Error Condition="!Exists('$(PayloadPath)')"
+           Text="Payload $(PayloadPath) belum ada. Jalankan `dotnet publish app/AllSense.App/AllSense.App.csproj -c Release` dulu." />
+    <Error Condition="!Exists('$(UninstallPath)')"
+           Text="Payload $(UninstallPath) belum ada. Jalankan `dotnet publish app/Uninstall/Uninstall.csproj -c Release` dulu." />
+  </Target>
+
 </Project>

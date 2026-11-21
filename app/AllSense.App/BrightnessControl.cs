@@ -7,9 +7,17 @@ public static class BrightnessControl
 {
     private static ManagementObject? _setter;
     private static int _levels = -1;
+    private static int _ddcCache = -1; // -1 = belum tahu, 0 = tidak ada, 1 = ada
+    private static readonly object _gate = new();
+    private static int? _curCache;
+    private static long _curCacheTick;
+    private static readonly object _cacheGate = new();
 
     private static void Ensure()
     {
+        if (_setter is not null) return;
+        lock (_gate)
+        {
         if (_setter is not null) return;
         try
         {
@@ -29,10 +37,26 @@ public static class BrightnessControl
             }
         }
         catch { _setter = null; _levels = -1; }
+        }
     }
 
-    /// <summary>Baca kecerahan saat ini dengan query segar (hindari cache basi).</summary>
+    /// <summary>Baca kecerahan saat ini, dengan cache TTL ~6 dtk agar query WMI
+    /// tidak dijalankan ulang setiap panggilan (polling 2–6 dtk).</summary>
     public static int? Current()
+    {
+        var now = Environment.TickCount64;
+        lock (_cacheGate)
+        {
+            if (_curCache.HasValue && now - _curCacheTick < 6000)
+                return _curCache;
+            var r = QueryCurrent();
+            _curCacheTick = now;
+            _curCache = r;
+            return r;
+        }
+    }
+
+    private static int? QueryCurrent()
     {
         try
         {
@@ -51,14 +75,23 @@ public static class BrightnessControl
 
     public static bool CanSet
     {
-        get { Ensure(); return (_setter is not null && _levels > 1) || DdcAvailable(); }
+        get
+        {
+            Ensure();
+            if (_setter is not null && _levels > 1) return true;
+            lock (_gate)
+            {
+                if (_ddcCache < 0) _ddcCache = DdcAvailable() ? 1 : 0;
+            }
+            return _ddcCache == 1;
+        }
     }
 
     public static bool Set(int value)
     {
         var v = Math.Clamp(value, 0, 100);
         Ensure();
-        if (_setter is not null)
+        if (_setter is not null && _levels > 1)
         {
             try
             {

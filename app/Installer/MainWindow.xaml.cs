@@ -65,11 +65,21 @@ public partial class MainWindow : Window
             Directory.CreateDirectory(dest);
             var target = Path.Combine(dest, ExeName);
 
-            // Jika AllSense sedang berjalan, matikan dulu agar file tidak terkunci.
+            // Jika AllSense sedang berjalan, matikan dan TUNGGU benar-benar keluar
+            // sebelum menimpa file. Tanpa WaitForExit, File.WriteAllBytes bisa
+            // gagal dengan "file sedang dipakai" (race yang intermittent).
             try
             {
                 foreach (var p in Process.GetProcessesByName("AllSense"))
-                    p.Kill();
+                {
+                    try
+                    {
+                        p.Kill();
+                        p.WaitForExit(5000);
+                    }
+                    catch { }
+                    finally { p.Dispose(); }
+                }
             }
             catch { }
 

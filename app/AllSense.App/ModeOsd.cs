@@ -31,6 +31,9 @@ internal sealed class ModeOsd : Window
     private readonly TranslateTransform _slide = new();
     private readonly TranslateTransform _scanMove = new();
     private readonly DispatcherTimer _hideTimer;
+    private readonly Storyboard _introSb;
+    private readonly Storyboard _outroSb;
+    private readonly DoubleAnimation _fillAnim;
 
     private readonly record struct ModeSpec(Brush Accent, Brush Soft, Geometry Geom, string Title, string Sub, double Gauge);
 
@@ -135,12 +138,59 @@ internal sealed class ModeOsd : Window
         tg.Children.Add(_scale);
         tg.Children.Add(_slide);
         _card.RenderTransform = tg;
-        _card.Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 34, ShadowDepth = 6, Opacity = 0.5, Color = Colors.Black };
+        _card.Effect = new System.Windows.Media.Effects.DropShadowEffect { BlurRadius = 12, ShadowDepth = 4, Opacity = 0.35, Color = Colors.Black };
 
         Content = _card;
 
         _hideTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1650) };
         _hideTimer.Tick += (_, _) => { _hideTimer.Stop(); PlayOutro(); };
+
+        // Bangun storyboard SEKALI (reuse) → tanpa alokasi/GC churn tiap Show(),
+        // dan Stop() mencegah animasi lama/baru tumpang-tindih pada properti sama.
+        _fillAnim = new DoubleAnimation(0, 0, TimeSpan.FromMilliseconds(500))
+        {
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+        };
+        Storyboard.SetTargetProperty(_fillAnim, new PropertyPath(FrameworkElement.WidthProperty));
+        Storyboard.SetTarget(_fillAnim, _gaugeFill);
+
+        var op = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTargetProperty(op, new PropertyPath(OpacityProperty));
+
+        var sx = new DoubleAnimation(0.9, 1, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTargetProperty(sx, new PropertyPath(ScaleTransform.ScaleXProperty));
+        Storyboard.SetTarget(sx, _scale);
+        var sy = new DoubleAnimation(0.9, 1, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTargetProperty(sy, new PropertyPath(ScaleTransform.ScaleYProperty));
+        Storyboard.SetTarget(sy, _scale);
+
+        var top = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(230)) { BeginTime = TimeSpan.FromMilliseconds(90), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTargetProperty(top, new PropertyPath(TextBlock.OpacityProperty));
+        Storyboard.SetTarget(top, _title);
+
+        var scan = new DoubleAnimation(-42, TrackWidth + 42, TimeSpan.FromMilliseconds(640)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
+        Storyboard.SetTargetProperty(scan, new PropertyPath(TranslateTransform.XProperty));
+        Storyboard.SetTarget(scan, _scanMove);
+
+        _introSb = new Storyboard();
+        _introSb.Children.Add(op);
+        _introSb.Children.Add(sx);
+        _introSb.Children.Add(sy);
+        _introSb.Children.Add(top);
+        _introSb.Children.Add(_fillAnim);
+        _introSb.Children.Add(scan);
+
+        var outOp = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
+        Storyboard.SetTargetProperty(outOp, new PropertyPath(OpacityProperty));
+        outOp.Completed += (_, _) => Hide();
+
+        var slide = new DoubleAnimation(0, -14, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
+        Storyboard.SetTargetProperty(slide, new PropertyPath(TranslateTransform.YProperty));
+        Storyboard.SetTarget(slide, _slide);
+
+        _outroSb = new Storyboard();
+        _outroSb.Children.Add(outOp);
+        _outroSb.Children.Add(slide);
     }
 
     public void Show(PowerMode mode)
@@ -158,6 +208,7 @@ internal sealed class ModeOsd : Window
         _gaugeFill.Width = 0;
 
         PositionTopCenter();
+        _outroSb.Stop(); // batalkan outro yang belum selesai
 
         if (!IsVisible)
         {
@@ -181,56 +232,25 @@ internal sealed class ModeOsd : Window
 
     private void PlayIntro(double gauge)
     {
-        var sb = new Storyboard();
-
-        var op = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(150)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(op, new PropertyPath(OpacityProperty));
-
-        var sx = new DoubleAnimation(0.9, 1, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(sx, new PropertyPath(ScaleTransform.ScaleXProperty));
-        Storyboard.SetTarget(sx, _scale);
-        var sy = new DoubleAnimation(0.9, 1, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(sy, new PropertyPath(ScaleTransform.ScaleYProperty));
-        Storyboard.SetTarget(sy, _scale);
-
-        var top = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(230)) { BeginTime = TimeSpan.FromMilliseconds(90), EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(top, new PropertyPath(TextBlock.OpacityProperty));
-        Storyboard.SetTarget(top, _title);
-
-        var fill = new DoubleAnimation(0, TrackWidth * gauge, TimeSpan.FromMilliseconds(500)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(fill, new PropertyPath(FrameworkElement.WidthProperty));
-        Storyboard.SetTarget(fill, _gaugeFill);
-
-        var scan = new DoubleAnimation(-42, TrackWidth + 42, TimeSpan.FromMilliseconds(640)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } };
-        Storyboard.SetTargetProperty(scan, new PropertyPath(TranslateTransform.XProperty));
-        Storyboard.SetTarget(scan, _scanMove);
-
-        sb.Children.Add(op);
-        sb.Children.Add(sx);
-        sb.Children.Add(sy);
-        sb.Children.Add(top);
-        sb.Children.Add(fill);
-        sb.Children.Add(scan);
-        sb.Begin(this);
-
+        _fillAnim.To = TrackWidth * gauge;
         _hideTimer.Stop();
         _hideTimer.Start();
+        _introSb.Stop();
+        _introSb.Begin(this);
     }
 
     private void PlayOutro()
     {
-        var sb = new Storyboard();
-        var op = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
-        Storyboard.SetTargetProperty(op, new PropertyPath(OpacityProperty));
-        op.Completed += (_, _) => Hide();
-        var slide = new DoubleAnimation(0, -14, TimeSpan.FromMilliseconds(240)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn } };
-        Storyboard.SetTargetProperty(slide, new PropertyPath(TranslateTransform.YProperty));
-        Storyboard.SetTarget(slide, _slide);
-        sb.Children.Add(op);
-        sb.Children.Add(slide);
-        sb.Begin(this);
+        _introSb.Stop();
+        _hideTimer.Stop();
+        _outroSb.Stop();
+        _outroSb.Begin(this);
     }
 
-    private static Brush BrushFrom(string hex) =>
-        new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+    private static Brush BrushFrom(string hex)
+    {
+        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+        b.Freeze(); // dipakai statis & lintas thread
+        return b;
+    }
 }

@@ -4,21 +4,26 @@
         Title="AllSense Control" Width="416" SizeToContent="Height"
         ResizeMode="NoResize" WindowStartupLocation="Manual"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        Foreground="{StaticResource FgBrush}" FontFamily="Segoe UI" FontSize="13">
+        Foreground="{StaticResource FgBrush}" FontFamily="{StaticResource UiFont}" FontSize="13"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
 
     <Window.Resources>
 
+        <!-- IKON -->
         <Geometry x:Key="gBolt">M13 2 4.5 13.5H11L9.5 22 19.5 10H13L15.5 2Z</Geometry>
         <Geometry x:Key="gPower">M12 3v8M6.4 6.6a8 8 0 1 0 11.2 0</Geometry>
+        <Geometry x:Key="gWave">M4 12.5h3l2-6.5 3 12 2.2-5.5H20</Geometry>
+        <Geometry x:Key="gFast">M5 15 12 8l7 7M5 20l7-7 7 7</Geometry>
         <Geometry x:Key="gSun">M12 7.8a4.2 4.2 0 1 0 0 8.4 4.2 4.2 0 0 0 0-8.4ZM12 2.5v2.4M12 19.1v2.4M21.5 12h-2.4M4.9 12H2.5M18.8 5.2l-1.7 1.7M6.9 17.1l-1.7 1.7M18.8 18.8l-1.7-1.7M6.9 6.9 5.2 5.2</Geometry>
         <Geometry x:Key="gSpeaker">M11 5 6 9H3v6h3l5 4V5ZM15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12</Geometry>
+        <Geometry x:Key="gSpeakerMute">M11 5 6 9H3v6h3l5 4V5Z</Geometry>
         <Geometry x:Key="gWifi">M2.5 8.5a15 15 0 0 1 19 0M5.5 12a11 11 0 0 1 13 0M8.5 15.5a7 7 0 0 1 7 0M12 19a1.3 1.3 0 1 1 0.01 0</Geometry>
         <Geometry x:Key="gBt">M6.5 7.5 17.5 16.5 12 21V3l5.5 4.5-11 9</Geometry>
         <Geometry x:Key="gMonitor">M3 4.5h18v12.5H3ZM8.5 21h7M12 17v4</Geometry>
-        <Geometry x:Key="gGear">M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5ZM19.4 15a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32h.02a1.6 1.6 0 0 0 1.05-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47h.02a1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.02a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.51 1.05Z</Geometry>
+        <Geometry x:Key="gBattery">M3 7.5h16v9H3ZM22 10.5v3</Geometry>
+        <Geometry x:Key="gGear">M12 8.75a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5ZM19.4 15a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32h.02a1.6 1.6 0 0 0 1.05-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47h.02a1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.02a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.51 1.05Z</Geometry>
         <Geometry x:Key="gX">M6 6l12 12M18 6 6 18</Geometry>
         <Geometry x:Key="gMin">M5 12h14</Geometry>
-        <Geometry x:Key="gBattery">M3 7.5h16v9H3ZM22 10.5v3M5.5 10h7v4h-7Z</Geometry>
 
         <Style x:Key="Ic" TargetType="Path">
             <Setter Property="StrokeThickness" Value="1.7"/>
@@ -28,103 +33,107 @@
             <Setter Property="Fill" Value="Transparent"/>
         </Style>
 
-        <Style x:Key="Card" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PanelBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+        <!-- KARTU -->
+        <Style x:Key="CardSolid" TargetType="Border">
+            <Setter Property="CornerRadius" Value="14"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="16"/>
-            <Setter Property="Padding" Value="15,14,15,15"/>
-            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+            <Setter Property="Padding" Value="12,11,12,10"/>
+            <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
         </Style>
 
+        <!-- JUDUL -->
         <Style x:Key="SecTitle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10.5"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="9,0,0,0"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+        <Style x:Key="SecTail" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="9.5"/>
+            <Setter Property="Foreground" Value="{StaticResource DimBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
 
-        <Style x:Key="IconBtn" TargetType="Button">
-            <Setter Property="Width" Value="32"/>
-            <Setter Property="Height" Value="32"/>
+        <!-- ROW -->
+        <Style x:Key="Row" TargetType="Grid">
+            <Setter Property="MinHeight" Value="29"/>
+        </Style>
+        <Style x:Key="RowLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+        <Style x:Key="RowValue" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+        <Style x:Key="RowDivider" TargetType="Border">
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Background" Value="{StaticResource LineBrush}"/>
+        </Style>
+
+        <!-- MODE TILE -->
+        <Style x:Key="ModeTile" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="bd" Background="{StaticResource PanelBrush}"
-                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
-                                CornerRadius="10">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="{StaticResource Panel2Brush}"/>
-                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Line2Brush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="2.5,0"/>
+            <Setter Property="Padding" Value="2,8,2,7"/>
         </Style>
 
-        <Style x:Key="Switch" TargetType="ToggleButton">
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Width" Value="39"/>
-            <Setter Property="Height" Value="23"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="bd" Width="39" Height="23" CornerRadius="12"
-                                Background="{StaticResource TrackBrush}"
-                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                            <Ellipse x:Name="knob" Width="17" Height="17" Fill="#F5F7FB"
-                                     HorizontalAlignment="Left" Margin="3,0,0,0">
-                                <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.55" Color="#000000"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="{StaticResource GreenBrush}"/>
-                                <Setter TargetName="bd" Property="BorderBrush" Value="#9935C973"/>
-                                <Setter TargetName="knob" Property="HorizontalAlignment" Value="Right"/>
-                                <Setter TargetName="knob" Property="Margin" Value="0,0,3,0"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
+        <!-- SLIDER: track 6px, thumb 18px, tidak terpotong -->
         <Style x:Key="SliderBase" TargetType="Slider">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="IsMoveToPointEnabled" Value="True"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Slider">
-                        <Grid VerticalAlignment="Center">
-                            <Track x:Name="PART_Track" Height="6">
+                        <Grid Height="30" VerticalAlignment="Center" Background="Transparent">
+                            <Border Height="6" CornerRadius="3"
+                                    Background="{StaticResource TrackBrush}"
+                                    VerticalAlignment="Center"/>
+                            <Track x:Name="PART_Track" VerticalAlignment="Center">
                                 <Track.DecreaseRepeatButton>
-                                    <RepeatButton Style="{x:Null}" Command="Slider.DecreaseLarge">
-                                        <RepeatButton.Background>
-                                            <SolidColorBrush x:Name="fill" Color="{Binding Tag, RelativeSource={RelativeSource AncestorType=Slider}}"/>
-                                        </RepeatButton.Background>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Height="6" CornerRadius="3"
+                                                        Background="{Binding Tag, RelativeSource={RelativeSource AncestorType=Slider}}"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
                                     </RepeatButton>
                                 </Track.DecreaseRepeatButton>
                                 <Track.IncreaseRepeatButton>
-                                    <RepeatButton Style="{x:Null}" Command="Slider.IncreaseLarge" Background="#FF262B37"/>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Focusable="False">
+                                        <RepeatButton.Template>
+                                            <ControlTemplate TargetType="RepeatButton">
+                                                <Border Background="Transparent"/>
+                                            </ControlTemplate>
+                                        </RepeatButton.Template>
+                                    </RepeatButton>
                                 </Track.IncreaseRepeatButton>
                                 <Track.Thumb>
-                                    <Thumb Width="18" Height="18">
+                                    <Thumb Width="18" Height="18" ClipToBounds="False">
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Ellipse Fill="#F5F7FB" Stroke="#E6FFFFFF" StrokeThickness="1.5">
-                                                    <Ellipse.Effect>
-                                                        <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.45" Color="#000000"/>
-                                                    </Ellipse.Effect>
-                                                </Ellipse>
+                                                <Grid Width="18" Height="18" ClipToBounds="False">
+                                                    <!-- thumb tanpa DropShadowEffect (blur per-frame saat drag) -->
+                                                    <Ellipse Width="18" Height="18" Fill="#FFF7F9FC"
+                                                             Stroke="#66FFFFFF" StrokeThickness="1"/>
+                                                </Grid>
                                             </ControlTemplate>
                                         </Thumb.Template>
                                     </Thumb>
@@ -136,35 +145,36 @@
             </Setter>
         </Style>
 
-        <!-- tombol mute ikon (kompak) -->
+        <!-- MUTE BUTTON -->
         <Style x:Key="MuteBtn" TargetType="ToggleButton">
-            <Setter Property="Width" Value="26"/>
-            <Setter Property="Height" Value="26"/>
+            <Setter Property="Width" Value="22"/>
+            <Setter Property="Height" Value="22"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="bd" CornerRadius="8" Background="#FF1A1E28"
-                                BorderBrush="#12FFFFFF" BorderThickness="1">
+                        <Border x:Name="bd" CornerRadius="6" Background="#0AFFFFFF"
+                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
                             <Grid>
-                                <Viewbox Width="13" Height="13">
-                                    <Path x:Name="spk" Data="{StaticResource gSpeaker}"
+                                <Viewbox Width="11" Height="11">
+                                    <Path x:Name="spk" Data="{StaticResource gSpeakerMute}"
                                           Style="{StaticResource Ic}" Stroke="{StaticResource MutedBrush}"/>
                                 </Viewbox>
-                                <Path x:Name="slash" Data="M3.5 3.5L20.5 20.5"
-                                      Stroke="#FFFF4356" StrokeThickness="2.2" Opacity="0"
-                                      StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                <Path x:Name="slash" Data="M2.5 2.5L21.5 21.5"
+                                      Stroke="{StaticResource RedBrush}" StrokeThickness="2"
+                                      Opacity="0" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="slash" Property="Opacity" Value="1"/>
-                                <Setter TargetName="spk" Property="Stroke" Value="#FFFF4356"/>
-                                <Setter TargetName="bd" Property="Background" Value="#26FF4356"/>
-                                <Setter TargetName="bd" Property="BorderBrush" Value="#52FF4356"/>
+                                <Setter TargetName="spk" Property="Stroke" Value="{StaticResource RedBrush}"/>
+                                <Setter TargetName="bd" Property="Background" Value="{StaticResource RedSoftBrush}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource RedLineBrush}"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="bd" Property="Background" Value="#FF1C212D"/>
+                                <Setter TargetName="bd" Property="Background" Value="#14FFFFFF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -172,74 +182,247 @@
             </Setter>
         </Style>
 
-    </Window.Resources>
-    <!-- shell jendela: radius 22 + shadow -->
-    <Border CornerRadius="22" BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-            Margin="10" Background="#FF0E1017">
-        <Border.Effect>
-            <DropShadowEffect BlurRadius="34" ShadowDepth="8" Opacity="0.55" Color="#000000"/>
-        </Border.Effect>
-        <Border CornerRadius="22" Background="#FF0E1017" ClipToBounds="True">
-            <Grid>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="20,20,20,22">
+        <!-- MINI BUTTON -->
+        <Style x:Key="MiniBtn" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="FontSize" Value="10.5"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="7" Background="{StaticResource CardHiBrush}"
+                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#1FFFFFFF"/>
+                                <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-                        <!-- header -->
-                        <Grid x:Name="DragBar" Margin="0,0,0,16" Background="Transparent">
+        <Style x:Key="MiniBtnPrimary" TargetType="Button" BasedOn="{StaticResource MiniBtn}">
+            <Setter Property="Foreground" Value="#FFEAF0FF"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="7" Background="{StaticResource BlueSoftBrush}"
+                                BorderBrush="{StaticResource BlueLineBrush}" BorderThickness="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#294D8DFF"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource BlueBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- CHIP -->
+        <Style x:Key="Chip" TargetType="Border">
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="6,1"/>
+            <Setter Property="Background" Value="#0BFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#0FFFFFFF"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="ChipText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+        </Style>
+
+        <!-- PILL -->
+        <Style x:Key="Pill" TargetType="Border">
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Padding" Value="7,1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#12FFFFFF"/>
+            <Setter Property="Background" Value="#08FFFFFF"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="PillText" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource DimBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="PillDot" TargetType="Ellipse">
+            <Setter Property="Width" Value="5"/>
+            <Setter Property="Height" Value="5"/>
+            <Setter Property="Fill" Value="{StaticResource DimBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+        </Style>
+
+        <!-- KBD -->
+        <Style x:Key="Kbd" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="Background" Value="#0BFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1,1,1,2"/>
+            <Setter Property="BorderBrush" Value="#1FFFFFFF"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- TILE -->
+        <Style x:Key="Tile" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Background" Value="#07FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#0EFFFFFF"/>
+            <Setter Property="Padding" Value="10,0"/>
+        </Style>
+        <Style x:Key="GrpTitle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource DimBrush}"/>
+            <Setter Property="Margin" Value="3,0,0,5"/>
+        </Style>
+
+        <!-- SWITCH -->
+        <Style x:Key="Switch" TargetType="ToggleButton">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Width" Value="33"/>
+            <Setter Property="Height" Value="19"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="bd" Width="33" Height="19" CornerRadius="10"
+                                Background="{StaticResource TrackBrush}"
+                                BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
+                            <Ellipse x:Name="knob" Width="14" Height="14" Fill="#FFE9EDF5"
+                                     HorizontalAlignment="Left" Margin="1.5,0,0,0">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="3" ShadowDepth="1"
+                                                      Opacity="0.5" Color="#000000"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background"
+                                        Value="{StaticResource GreenBrush}"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#8C35C973"/>
+                                <Setter TargetName="knob" Property="HorizontalAlignment"
+                                        Value="Right"/>
+                                <Setter TargetName="knob" Property="Margin" Value="0,0,1.5,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="BorderBrush" Value="#66FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- SHELL -->
+    <!-- Tanpa DropShadowEffect besar: software blur di-render ulang tiap invalidasi
+         (slider/mode/update teks tiap 2 dtk). Kedalaman dijaga lewat border + gradien. -->
+    <Border Margin="10" CornerRadius="20" Padding="1" Background="{StaticResource Line2Brush}">
+        <Border CornerRadius="19" ClipToBounds="True">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FF0C0E14" Offset="0"/>
+                    <GradientStop Color="#FF090A0F" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="14,14,14,12">
+
+                        <!-- HEADER -->
+                        <Grid x:Name="DragBar" Background="Transparent" Margin="2,0,2,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Width="44" Height="44" CornerRadius="13"
-                                    Background="{StaticResource RaisedBrush}"
-                                    BorderBrush="{StaticResource Line2Brush}" BorderThickness="1">
-                                <Viewbox Width="23" Height="23">
+                            <Border Width="36" Height="36" CornerRadius="10" BorderThickness="1"
+                                    BorderBrush="{StaticResource Line2Brush}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#FF2A2E3B" Offset="0"/>
+                                        <GradientStop Color="#FF111319" Offset="0.7"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Viewbox Width="18" Height="18">
                                     <Path Data="{StaticResource gBolt}" Style="{StaticResource Ic}"
-                                          Stroke="{StaticResource RedBrush}" Fill="{StaticResource RedBrush}"/>
+                                          Stroke="{StaticResource RedBrush}" Fill="{StaticResource RedBrush}">
+                                        <Path.Effect>
+                                            <DropShadowEffect BlurRadius="8" ShadowDepth="0"
+                                                              Opacity="0.75" Color="#FFFF4356"/>
+                                        </Path.Effect>
+                                    </Path>
                                 </Viewbox>
                             </Border>
 
-                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-                                <TextBlock Text="AllSense Control" FontSize="16.5" FontWeight="Bold"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                    <Border Padding="9,2" CornerRadius="20" Background="{StaticResource RaisedBrush}"
-                                            BorderBrush="{StaticResource LineBrush}" BorderThickness="1">
-                                        <TextBlock x:Name="VersionChip" Text="v1.0.0" FontSize="10.5" FontWeight="SemiBold"
-                                                   Foreground="{StaticResource MutedBrush}"/>
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="AllSense Control" FontSize="14.5"
+                                           FontWeight="SemiBold"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                    <Border Style="{StaticResource Chip}">
+                                        <TextBlock x:Name="VersionChip" Style="{StaticResource ChipText}"
+                                                   Text="v2.0.0"/>
                                     </Border>
-                                    <Border x:Name="AcChip" Margin="6,0,0,0" Padding="9,2" CornerRadius="20"
+                                    <Border x:Name="AcChip" Style="{StaticResource Chip}"
+                                            Margin="5,0,0,0"
                                             Background="{StaticResource GreenSoftBrush}"
-                                            BorderBrush="{StaticResource GreenLineBrush}" BorderThickness="1">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Ellipse Width="6" Height="6" VerticalAlignment="Center"
-                                                     Margin="0,0,6,0" Fill="{StaticResource GreenBrush}"/>
-                                            <TextBlock x:Name="AcText" Text="AC · 100%" FontSize="10.5"
-                                                       FontWeight="SemiBold" Foreground="{StaticResource GreenBrush}"/>
-                                        </StackPanel>
+                                            BorderBrush="{StaticResource GreenLineBrush}">
+                                        <TextBlock x:Name="AcText" Style="{StaticResource ChipText}"
+                                                   Text="AC · 100%"
+                                                   Foreground="{StaticResource GreenBrush}"/>
                                     </Border>
                                 </StackPanel>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button Style="{StaticResource IconBtn}" ToolTip="Pengaturan"
+                            <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                <Button Style="{StaticResource GhostBtn}" ToolTip="Pengaturan"
                                         Click="SettingsBtn_Click">
-                                    <Viewbox Width="16" Height="16">
+                                    <Viewbox Width="14" Height="14">
                                         <Path Data="{StaticResource gGear}" Style="{StaticResource Ic}"
                                               Stroke="{StaticResource MutedBrush}"/>
                                     </Viewbox>
                                 </Button>
-                                <Button Style="{StaticResource IconBtn}" ToolTip="Minimalkan" Margin="7,0,0,0"
-                                        Click="MinBtn_Click">
-                                    <Viewbox Width="14" Height="14">
+                                <Button Style="{StaticResource GhostBtn}" ToolTip="Minimalkan"
+                                        Margin="4,0,0,0" Click="MinBtn_Click">
+                                    <Viewbox Width="13" Height="13">
                                         <Path Data="{StaticResource gMin}" Style="{StaticResource Ic}"
                                               Stroke="{StaticResource MutedBrush}"/>
                                     </Viewbox>
                                 </Button>
-                                <Button Style="{StaticResource IconBtn}" ToolTip="Tutup" Margin="7,0,0,0"
-                                        Click="HeaderClose_Click">
-                                    <Viewbox Width="14" Height="14">
+                                <Button Style="{StaticResource GhostBtn}" ToolTip="Tutup"
+                                        Margin="4,0,0,0" Click="HeaderClose_Click">
+                                    <Viewbox Width="13" Height="13">
                                         <Path Data="{StaticResource gX}" Style="{StaticResource Ic}"
                                               Stroke="{StaticResource MutedBrush}"/>
                                     </Viewbox>
@@ -247,575 +430,713 @@
                             </StackPanel>
                         </Grid>
 
-                        <!-- baterai -->
-                        <Border Style="{StaticResource Card}" Padding="12,11">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Width="28" Height="28" CornerRadius="8"
-                                        Background="{StaticResource GreenSoftBrush}"
-                                        BorderBrush="#4D35C973" BorderThickness="1">
-                                    <Viewbox Width="15" Height="15">
-                                        <Path Data="{StaticResource gBattery}" Style="{StaticResource Ic}"
-                                              Stroke="{StaticResource GreenBrush}" Fill="{StaticResource GreenBrush}"/>
-                                    </Viewbox>
-                                </Border>
-                                <StackPanel Grid.Column="1" Margin="9,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock Text="BATERAI" FontSize="9.5" FontWeight="SemiBold"
-                                               Foreground="{StaticResource DimBrush}"/>
-                                    <TextBlock x:Name="BatteryText" Text="—" FontSize="14" FontWeight="SemiBold"
-                                               Foreground="{StaticResource FgBrush}" Margin="0,1,0,0"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <!-- performance -->
-                        <Border Style="{StaticResource Card}" BorderBrush="#66FF4356">
+                        <!-- MODE DAYA -->
+                        <Border Style="{StaticResource CardSolid}">
                             <StackPanel>
-                                <Grid Margin="0,0,0,13">
+                                <Grid Margin="0,0,0,9">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Width="28" Height="28" CornerRadius="9"
+                                        <Border Width="21" Height="21" CornerRadius="6"
+                                                BorderThickness="1"
                                                 Background="{StaticResource RedSoftBrush}"
-                                                BorderBrush="{StaticResource RedLineBrush}" BorderThickness="1">
-                                            <Viewbox Width="15" Height="15">
-                                                <Path Data="{StaticResource gBolt}" Style="{StaticResource Ic}"
+                                                BorderBrush="{StaticResource RedLineBrush}">
+                                            <Viewbox Width="12" Height="12">
+                                                <Path Data="{StaticResource gBolt}"
+                                                      Style="{StaticResource Ic}"
                                                       Stroke="{StaticResource RedBrush}"/>
                                             </Viewbox>
                                         </Border>
-                                        <TextBlock Style="{StaticResource SecTitle}" Text="PERFORMANCE"/>
+                                        <TextBlock Style="{StaticResource SecTitle}" Text="Mode daya"/>
                                     </StackPanel>
-                                    <TextBlock HorizontalAlignment="Right" FontSize="10" FontFamily="Consolas"
-                                               Foreground="{StaticResource DimBrush}" VerticalAlignment="Center"
-                                               Text="POWER MODE"/>
+                                    <TextBlock Style="{StaticResource SecTail}" Text="POWER MODE"/>
                                 </Grid>
 
-                                <UniformGrid Columns="3" Margin="6,0">
-                                    <Border x:Name="bdE" Tag="efficiency" Cursor="Hand" Margin="0,0,4,0"
-                                            CornerRadius="13" MouseLeftButtonDown="Mode_Click">
-                                        <StackPanel Margin="0,12,0,10">
-                                            <Viewbox Width="20" Height="20" Margin="0,0,0,8">
-                                                <Path x:Name="EIcon" Data="{StaticResource gPower}" Style="{StaticResource Ic}"/>
-                                            </Viewbox>
-                                            <TextBlock x:Name="ECap" Text="Best Efficiency" TextWrapping="Wrap"
-                                                       LineHeight="13" FontSize="10.5" FontWeight="SemiBold"
-                                                       HorizontalAlignment="Center" TextAlignment="Center"/>
-                                            <TextBlock x:Name="ESub" Text="HEMAT" FontSize="8.5" FontWeight="Medium"
-                                                       HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border x:Name="bdB" Tag="balanced" Cursor="Hand" Margin="4,0"
-                                            CornerRadius="13" MouseLeftButtonDown="Mode_Click">
-                                        <StackPanel Margin="0,12,0,10">
-                                            <Viewbox Width="20" Height="20" Margin="0,0,0,8">
-                                                <Path x:Name="BIcon" Data="{StaticResource gBolt}" Style="{StaticResource Ic}"/>
-                                            </Viewbox>
-                                            <TextBlock x:Name="BCap" Text="Balanced" FontSize="10.5"
-                                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                            <TextBlock x:Name="BSub" Text="AKTIF" FontSize="8.5" FontWeight="Medium"
-                                                       HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border x:Name="bdP" Tag="performance" Cursor="Hand" Margin="4,0,0,0"
-                                            CornerRadius="13" MouseLeftButtonDown="Mode_Click">
-                                        <StackPanel Margin="0,12,0,10">
-                                            <Viewbox Width="20" Height="20" Margin="0,0,0,8">
-                                                <Path x:Name="PIcon" Data="{StaticResource gGear}" Style="{StaticResource Ic}"/>
-                                            </Viewbox>
-                                            <TextBlock x:Name="PCap" Text="Best Performance" TextWrapping="Wrap"
-                                                       LineHeight="13" FontSize="10.5" FontWeight="SemiBold"
-                                                       HorizontalAlignment="Center" TextAlignment="Center"/>
-                                            <TextBlock x:Name="PSub" Text="MAKS" FontSize="8.5" FontWeight="Medium"
-                                                       HorizontalAlignment="Center" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Border>
-                                </UniformGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- koneksi + screen -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Border Style="{StaticResource Card}" Margin="0,0,6,12">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,13">
-                                        <Border Width="28" Height="28" CornerRadius="9"
-                                                Background="{StaticResource GreenSoftBrush}"
-                                                BorderBrush="{StaticResource GreenLineBrush}" BorderThickness="1">
-                                            <Viewbox Width="15" Height="15">
-                                                <Path Data="{StaticResource gWifi}" Style="{StaticResource Ic}"
-                                                      Stroke="{StaticResource GreenBrush}"/>
-                                            </Viewbox>
-                                        </Border>
-                                        <TextBlock Style="{StaticResource SecTitle}" Text="KONEKSI"/>
-                                    </StackPanel>
-                                    <UniformGrid Columns="2">
-                                        <Border x:Name="WifiT" Margin="0,0,5,0" CornerRadius="14">
-                                            <StackPanel Margin="0,13,0,11">
-                                                <Border x:Name="WifiIcWrap" Width="34" Height="34" CornerRadius="11"
-                                                        HorizontalAlignment="Center" Margin="0,0,0,7"
-                                                        Background="#FF20242F">
-                                                    <Viewbox Width="19" Height="19">
-                                                        <Path x:Name="WifiIc" Data="{StaticResource gWifi}"
-                                                              Style="{StaticResource Ic}"/>
-                                                    </Viewbox>
-                                                </Border>
-                                                <TextBlock x:Name="WifiLbl" Text="Wi-Fi" FontSize="11.5"
-                                                           FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                                                            Margin="0,3,0,0">
-                                                    <Ellipse x:Name="WifiDot" Width="5" Height="5" Margin="0,2,5,0"/>
-                                                    <TextBlock x:Name="WifiSt" Text="Off" FontSize="9" FontWeight="Bold"/>
-                                                </StackPanel>
+                                <Border CornerRadius="10" Background="{StaticResource InsetBrush}"
+                                        BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
+                                        Padding="3">
+                                    <UniformGrid Columns="3">
+                                        <Border x:Name="bdE" Tag="efficiency"
+                                                Style="{StaticResource ModeTile}"
+                                                MouseLeftButtonDown="Mode_Click">
+                                            <StackPanel>
+                                                <Viewbox Width="16" Height="16" Margin="0,0,0,4"
+                                                         HorizontalAlignment="Center">
+                                                    <Path x:Name="EIcon" Data="{StaticResource gPower}"
+                                                          Style="{StaticResource Ic}"/>
+                                                </Viewbox>
+                                                <TextBlock x:Name="ECap" Text="Hemat" FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"/>
+                                                <TextBlock x:Name="ESub" Text="EFFICIENCY" FontSize="8.5"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Border>
-                                        <Border x:Name="BtT" Margin="5,0,0,0" CornerRadius="14">
-                                            <StackPanel Margin="0,13,0,11">
-                                                <Border x:Name="BtIcWrap" Width="34" Height="34" CornerRadius="11"
-                                                        HorizontalAlignment="Center" Margin="0,0,0,7"
-                                                        Background="#FF20242F">
-                                                    <Viewbox Width="19" Height="19">
-                                                        <Path x:Name="BtIc" Data="{StaticResource gBt}"
-                                                              Style="{StaticResource Ic}"/>
-                                                    </Viewbox>
-                                                </Border>
-                                                <TextBlock x:Name="BtLbl" Text="Bluetooth" FontSize="11.5"
-                                                           FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                                                            Margin="0,3,0,0">
-                                                    <Ellipse x:Name="BtDot" Width="5" Height="5" Margin="0,2,5,0"/>
-                                                    <TextBlock x:Name="BtSt" Text="Off" FontSize="9" FontWeight="Bold"/>
-                                                </StackPanel>
+                                        <Border x:Name="bdB" Tag="balanced"
+                                                Style="{StaticResource ModeTile}"
+                                                MouseLeftButtonDown="Mode_Click">
+                                            <StackPanel>
+                                                <Viewbox Width="16" Height="16" Margin="0,0,0,4"
+                                                         HorizontalAlignment="Center">
+                                                    <Path x:Name="BIcon" Data="{StaticResource gWave}"
+                                                          Style="{StaticResource Ic}"/>
+                                                </Viewbox>
+                                                <TextBlock x:Name="BCap" Text="Seimbang" FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"/>
+                                                <TextBlock x:Name="BSub" Text="BALANCED" FontSize="8.5"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border x:Name="bdP" Tag="performance"
+                                                Style="{StaticResource ModeTile}"
+                                                MouseLeftButtonDown="Mode_Click">
+                                            <StackPanel>
+                                                <Viewbox Width="16" Height="16" Margin="0,0,0,4"
+                                                         HorizontalAlignment="Center">
+                                                    <Path x:Name="PIcon" Data="{StaticResource gFast}"
+                                                          Style="{StaticResource Ic}"/>
+                                                </Viewbox>
+                                                <TextBlock x:Name="PCap" Text="Turbo" FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"/>
+                                                <TextBlock x:Name="PSub" Text="PERFORMANCE" FontSize="8.5"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           HorizontalAlignment="Center"
+                                                           Margin="0,2,0,0"/>
                                             </StackPanel>
                                         </Border>
                                     </UniformGrid>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Grid.Column="1" Style="{StaticResource Card}" Margin="6,0,0,12">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,13">
-                                        <Border Width="28" Height="28" CornerRadius="9"
-                                                Background="{StaticResource BlueSoftBrush}"
-                                                BorderBrush="{StaticResource BlueLineBrush}" BorderThickness="1">
-                                            <Viewbox Width="15" Height="15">
-                                                <Path Data="{StaticResource gMonitor}" Style="{StaticResource Ic}"
-                                                      Stroke="{StaticResource BlueBrush}"/>
-                                            </Viewbox>
-                                        </Border>
-                                        <TextBlock Style="{StaticResource SecTitle}" Text="SCREEN"/>
-                                    </StackPanel>
-                                    <StackPanel>
-                                        <Grid MinHeight="34">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="Refresh" FontSize="12.5" FontWeight="Medium"
-                                                       Foreground="{StaticResource FgBrush}"
-                                                       VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal"
-                                                        VerticalAlignment="Center">
-                                                <TextBlock x:Name="RefreshText" Text="60 Hz" FontSize="12"
-                                                           FontFamily="Consolas"
-                                                           Foreground="{StaticResource MutedBrush}"/>
-                                                <Viewbox Width="12" Height="12" Margin="4,0,0,0">
-                                                    <Path Data="M7 10l5 5 5-5" Style="{StaticResource Ic}"
-                                                          Stroke="{StaticResource DimBrush}"/>
-                                                </Viewbox>
-                                            </StackPanel>
-                                        </Grid>
-                                        <Border Padding="0,9,0,2" Margin="0,6,0,0"
-                                                BorderBrush="#0EFFFFFF" BorderThickness="0,1,0,0">
-                                            <Grid>
-                                                <TextBlock Text="Resolusi" FontSize="10.5"
-                                                           Foreground="{StaticResource DimBrush}"/>
-                                                <TextBlock x:Name="ResText" Text="1920 × 1200" FontSize="10"
-                                                           FontFamily="Consolas" HorizontalAlignment="Right"
-                                                           Foreground="{StaticResource MutedBrush}"/>
-                                            </Grid>
-                                        </Border>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-
-                        <!-- tampilan & suara -->
-                        <Border Style="{StaticResource Card}" BorderBrush="#66FFB020">
-                            <StackPanel>
-                                <Grid Margin="0,0,0,12">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Border Width="28" Height="28" CornerRadius="9"
-                                                Background="{StaticResource AmberSoftBrush}"
-                                                BorderBrush="{StaticResource AmberLineBrush}" BorderThickness="1">
-                                            <Viewbox Width="15" Height="15">
-                                                <Path Data="{StaticResource gSun}" Style="{StaticResource Ic}"
-                                                      Stroke="{StaticResource AmberBrush}"/>
-                                            </Viewbox>
-                                        </Border>
-                                        <TextBlock Style="{StaticResource SecTitle}" Text="TAMPILAN &amp; SUARA"/>
-                                    </StackPanel>
-                                    <TextBlock HorizontalAlignment="Right" FontSize="10" FontFamily="Consolas"
-                                               Foreground="{StaticResource DimBrush}" VerticalAlignment="Center"
-                                               Text="A/V"/>
-                                </Grid>
-
-                                <StackPanel>
-                                    <!-- Brightness — satu baris -->
-                                    <Grid Margin="0,0,0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Viewbox Grid.Column="0" Width="15" Height="15" Margin="0,0,8,0"
-                                                 VerticalAlignment="Center">
-                                            <Path Data="{StaticResource gSun}" Style="{StaticResource Ic}"
-                                                  Stroke="{StaticResource DimBrush}"/>
-                                        </Viewbox>
-                                        <TextBlock Grid.Column="1" Text="Brightness" FontSize="12"
-                                                   FontWeight="SemiBold" VerticalAlignment="Center"
-                                                   Foreground="{StaticResource MutedBrush}"/>
-                                        <Slider Grid.Column="2" x:Name="BrightSlider"
-                                                Style="{StaticResource SliderBase}" Margin="10,0,10,0"
-                                                VerticalAlignment="Center"
-                                                Tag="#FFFFB020" Minimum="10" Maximum="100"
-                                                ValueChanged="BrightSlider_ValueChanged"/>
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock x:Name="BrightVal" Text="75" FontSize="13"
-                                                       FontWeight="SemiBold" FontFamily="Consolas"
-                                                       Foreground="{StaticResource FgBrush}"/>
-                                            <TextBlock Text="%" FontSize="10" Margin="1,2,0,0"
-                                                       Foreground="{StaticResource DimBrush}"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <!-- Volume — satu baris + mute ikon -->
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Viewbox Grid.Column="0" Width="15" Height="15" Margin="0,0,8,0"
-                                                 VerticalAlignment="Center">
-                                            <Path Data="{StaticResource gSpeaker}" Style="{StaticResource Ic}"
-                                                  Stroke="{StaticResource DimBrush}"/>
-                                        </Viewbox>
-                                        <TextBlock Grid.Column="1" Text="Volume" FontSize="12"
-                                                   FontWeight="SemiBold" VerticalAlignment="Center"
-                                                   Foreground="{StaticResource MutedBrush}"/>
-                                        <ToggleButton Grid.Column="2" x:Name="MuteTog"
-                                                      Style="{StaticResource MuteBtn}" Margin="10,0,0,0"
-                                                      VerticalAlignment="Center" Click="Mute_Changed"/>
-                                        <Slider Grid.Column="3" x:Name="VolSlider"
-                                                Style="{StaticResource SliderBase}" Margin="10,0,10,0"
-                                                VerticalAlignment="Center"
-                                                Tag="#FFFF4356" Minimum="0" Maximum="100"
-                                                ValueChanged="VolSlider_ValueChanged"/>
-                                        <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock x:Name="VolVal" Text="65" FontSize="13"
-                                                       FontWeight="SemiBold" FontFamily="Consolas"
-                                                       Foreground="{StaticResource FgBrush}"/>
-                                            <TextBlock Text="%" FontSize="10" Margin="1,2,0,0"
-                                                       Foreground="{StaticResource DimBrush}"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </StackPanel>
+                                </Border>
                             </StackPanel>
                         </Border>
 
-                        <!-- exit -->
-                        <Border x:Name="ExitBtn" Cursor="Hand" CornerRadius="13"
-                                Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource LineBrush}"
-                                BorderThickness="1" Padding="0,12" MouseLeftButtonDown="ExitBtn_Click">
-                            <TextBlock Text="Keluar" FontSize="13" FontWeight="SemiBold"
-                                       Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"/>
+                        <!-- TAMPILAN & SUARA -->
+                        <Border Style="{StaticResource CardSolid}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,9">
+                                    <Border Width="21" Height="21" CornerRadius="6" BorderThickness="1"
+                                            Background="{StaticResource BlueSoftBrush}"
+                                            BorderBrush="{StaticResource BlueLineBrush}">
+                                        <Viewbox Width="12" Height="12">
+                                            <Path Data="{StaticResource gMonitor}"
+                                                  Style="{StaticResource Ic}"
+                                                  Stroke="{StaticResource BlueBrush}"/>
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource SecTitle}" Text="Tampilan &amp; suara"/>
+                                </StackPanel>
+
+                                <!-- Kecerahan: label+value satu baris, slider penuh di bawah -->
+                                <Grid Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="14" Height="14"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gSun}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1" Text="Kecerahan" FontSize="12.5"
+                                               Foreground="{StaticResource LabelBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,8,0"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <TextBlock x:Name="BrightVal" Text="75" FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   Foreground="{StaticResource FgBrush}"
+                                                   TextAlignment="Right" MinWidth="26"/>
+                                        <TextBlock Text="%" FontSize="10"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   Foreground="{StaticResource DimBrush}"
+                                                   VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Slider Margin="0,2,0,4" x:Name="BrightSlider"
+                                        Style="{StaticResource SliderBase}"
+                                        Tag="#FFFFB020" Minimum="0" Maximum="100"
+                                        ValueChanged="BrightSlider_ValueChanged"/>
+
+                                <Border Style="{StaticResource RowDivider}" Margin="0,2,0,6"/>
+
+                                <!-- Volume: label+mute+value satu baris, slider penuh di bawah -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="14" Height="14"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gSpeaker}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                VerticalAlignment="Center" Margin="8,0,8,0">
+                                        <TextBlock Text="Volume" FontSize="12.5"
+                                                   Foreground="{StaticResource LabelBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        <ToggleButton x:Name="MuteTog"
+                                                      Style="{StaticResource MuteBtn}"
+                                                      VerticalAlignment="Center" Margin="8,0,0,0"
+                                                      Click="Mute_Changed" ToolTip="Bisukan suara"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <TextBlock x:Name="VolVal" Text="65" FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   Foreground="{StaticResource FgBrush}"
+                                                   TextAlignment="Right" MinWidth="26"/>
+                                        <TextBlock Text="%" FontSize="10"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   Foreground="{StaticResource DimBrush}"
+                                                   VerticalAlignment="Center" Margin="2,0,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Slider Margin="0,2,0,0" x:Name="VolSlider"
+                                        Style="{StaticResource SliderBase}"
+                                        Tag="#FF4D8DFF" Minimum="0" Maximum="100"
+                                        ValueChanged="VolSlider_ValueChanged"/>
+                            </StackPanel>
                         </Border>
 
-                        <TextBlock Text="UNIVERSAL · TANPA ADMIN · POWER MODE WINDOWS"
-                                   FontSize="10.5" Foreground="{StaticResource DimBrush}"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                        <!-- STATUS PERANGKAT -->
+                        <Border Style="{StaticResource CardSolid}" Margin="0,0,0,10">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,7">
+                                    <Border Width="21" Height="21" CornerRadius="6"
+                                            BorderThickness="1"
+                                            Background="{StaticResource GreenSoftBrush}"
+                                            BorderBrush="{StaticResource GreenLineBrush}">
+                                        <Viewbox Width="12" Height="12">
+                                            <Path Data="{StaticResource gBattery}"
+                                                  Style="{StaticResource Ic}"
+                                                  Stroke="{StaticResource GreenBrush}"/>
+                                        </Viewbox>
+                                    </Border>
+                                    <TextBlock Style="{StaticResource SecTitle}"
+                                               Text="Status perangkat"/>
+                                </StackPanel>
+
+                                <Grid Style="{StaticResource Row}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="13" Height="13"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gBattery}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource RowLabel}"
+                                               Text="Baterai"/>
+                                    <Border Grid.Column="2" Width="46" Height="4" CornerRadius="2"
+                                            Background="{StaticResource TrackBrush}"
+                                            VerticalAlignment="Center" Margin="0,0,8,0">
+                                        <Border x:Name="BatBar" HorizontalAlignment="Left"
+                                                Width="0" Height="4" CornerRadius="2"
+                                                Background="{StaticResource GreenBrush}"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="3" x:Name="BatteryText"
+                                               Style="{StaticResource RowValue}" Text="—"/>
+                                </Grid>
+
+                                <Border Style="{StaticResource RowDivider}"/>
+
+                                <Grid Style="{StaticResource Row}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="13" Height="13"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gWifi}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource RowLabel}"
+                                               Text="Wi-Fi"/>
+                                    <Border Grid.Column="2" x:Name="WifiT"
+                                            Style="{StaticResource Pill}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse x:Name="WifiDot"
+                                                     Style="{StaticResource PillDot}"/>
+                                            <TextBlock x:Name="WifiSt"
+                                                       Style="{StaticResource PillText}" Text="Off"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <Border Style="{StaticResource RowDivider}"/>
+
+                                <Grid Style="{StaticResource Row}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="13" Height="13"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gBt}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource RowLabel}"
+                                               Text="Bluetooth"/>
+                                    <Border Grid.Column="2" x:Name="BtT"
+                                            Style="{StaticResource Pill}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse x:Name="BtDot"
+                                                     Style="{StaticResource PillDot}"/>
+                                            <TextBlock x:Name="BtSt"
+                                                       Style="{StaticResource PillText}" Text="Off"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <Border Style="{StaticResource RowDivider}"/>
+
+                                <Grid Style="{StaticResource Row}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Grid.Column="0" Width="13" Height="13"
+                                             VerticalAlignment="Center">
+                                        <Path Data="{StaticResource gMonitor}" Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource DimBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource RowLabel}"
+                                               Text="Layar"/>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <TextBlock x:Name="ResText" Text="1920 × 1200"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="11.5"
+                                                   Foreground="{StaticResource MutedBrush}"/>
+                                        <TextBlock Text="   " FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="11.5"/>
+                                        <TextBlock x:Name="RefreshText" Text="60 Hz"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="11.5"
+                                                   Foreground="{StaticResource MutedBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- FOOTER -->
+                        <Grid Margin="0,2,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="ExitBtn" Cursor="Hand" CornerRadius="9"
+                                    Padding="13,0" Height="30" BorderThickness="1"
+                                    MouseLeftButtonDown="ExitBtn_Click">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource RedSoftBrush}"/>
+                                                <Setter Property="BorderBrush"
+                                                        Value="{StaticResource RedLineBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Viewbox Width="12" Height="12" Margin="0,0,6,0">
+                                        <Path Data="{StaticResource gPower}"
+                                              Style="{StaticResource Ic}"
+                                              Stroke="{StaticResource MutedBrush}"/>
+                                    </Viewbox>
+                                    <TextBlock Text="Keluar" FontSize="12" FontWeight="SemiBold"
+                                               Foreground="{StaticResource MutedBrush}"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                        HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Border Style="{StaticResource Kbd}" Cursor="Arrow"
+                                        Margin="0,0,5,0" Padding="5,1" BorderThickness="1">
+                                    <TextBlock x:Name="HKFootA" Text="Ctrl+Alt+A"
+                                               FontFamily="{StaticResource MonoFont}"
+                                               FontSize="9.5"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                                <TextBlock Text="panel" FontFamily="{StaticResource MonoFont}"
+                                           FontSize="9.5" Foreground="{StaticResource DimBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,9,0"/>
+                                <Border Style="{StaticResource Kbd}" Cursor="Arrow"
+                                        Margin="0,0,5,0" Padding="5,1" BorderThickness="1">
+                                    <TextBlock x:Name="HKFootM" Text="Ctrl+Alt+M"
+                                               FontFamily="{StaticResource MonoFont}"
+                                               FontSize="9.5"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </Border>
+                                <TextBlock Text="mode" FontFamily="{StaticResource MonoFont}"
+                                           FontSize="9.5" Foreground="{StaticResource DimBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- overlay settings -->
+                <!-- OVERLAY PENGATURAN -->
                 <Grid x:Name="Overlay" Visibility="Collapsed">
-                    <Border Background="#8A050609" MouseLeftButtonDown="Overlay_Click"/>
-                    <Border x:Name="Sheet" Width="330" HorizontalAlignment="Right"
-                            Background="#FF141824" BorderBrush="{StaticResource Line2Brush}"
+                    <Border Background="#99040508" MouseLeftButtonDown="Overlay_Click"/>
+                    <Border x:Name="Sheet" Width="322" HorizontalAlignment="Right"
+                            Background="#FF0F1218"
+                            BorderBrush="{StaticResource Line2Brush}"
                             BorderThickness="1,0,0,0">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="40" ShadowDepth="0" Opacity="0.55" Color="#000000"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="0"
+                                              Opacity="0.30" Color="#000000"/>
                         </Border.Effect>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="20,18,20,18">
-
-                                <Grid Margin="0,0,0,18">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="13,13,13,16">
+                                <Grid Margin="2,0,2,12">
                                     <StackPanel Orientation="Horizontal">
-                                        <Viewbox Width="16" Height="16" Margin="0,0,10,0">
+                                        <Viewbox Width="14" Height="14" Margin="0,0,8,0">
                                             <Path Data="{StaticResource gGear}" Style="{StaticResource Ic}"
                                                   Stroke="{StaticResource AmberBrush}"/>
                                         </Viewbox>
-                                        <TextBlock Text="PENGATURAN" FontSize="11" FontWeight="Bold"
-                                                   Foreground="{StaticResource MutedBrush}"
+                                        <TextBlock Text="Pengaturan" FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource LabelBrush}"
                                                    VerticalAlignment="Center"/>
                                     </StackPanel>
-                                    <Button x:Name="SheetClose" HorizontalAlignment="Right" Content="✕"
-                                            Cursor="Hand" Background="Transparent" BorderThickness="0"
-                                            Foreground="{StaticResource MutedBrush}" FontSize="13"
-                                            Click="SheetClose_Click"/>
+                                    <Button Style="{StaticResource GhostBtn}"
+                                            HorizontalAlignment="Right" Click="SheetClose_Click"
+                                            ToolTip="Tutup">
+                                        <Viewbox Width="12" Height="12">
+                                            <Path Data="{StaticResource gX}" Style="{StaticResource Ic}"
+                                                  Stroke="{StaticResource MutedBrush}"/>
+                                        </Viewbox>
+                                    </Button>
                                 </Grid>
 
-                                <TextBlock Text="SHORTCUT" FontSize="10" FontWeight="Bold"
-                                           Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                <Border Padding="10,9" CornerRadius="9"
-                                        Background="{StaticResource RaisedBrush}" Margin="0,0,0,6">
-                                    <Grid>
-                                        <TextBlock Text="Buka / Tutup window" FontSize="13"/>
-                                        <Border HorizontalAlignment="Right" Padding="9,2" CornerRadius="7"
-                                                Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1,1,1,2"
-                                                Cursor="Hand" ToolTip="Klik untuk ganti hotkey"
-                                                MouseLeftButtonDown="HKRecord_Click" Tag="1">
-                                            <TextBlock x:Name="HKLabelA" Text="Ctrl+Alt+A" FontSize="11" FontFamily="Consolas"
-                                                       FontWeight="SemiBold" Foreground="{StaticResource FgBrush}"/>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-
-                                <StackPanel Margin="0,0,0,4">
-                                    <TextBlock Text="Preset cepat (untuk Buka/Tutup)" FontSize="9.5"
-                                               Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                    <WrapPanel>
-                                        <Border Tag="ctrl+alt+a" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="TogglePreset_Click">
-                                            <TextBlock Text="Ctrl+Alt+A" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="ctrl+shift+a" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="TogglePreset_Click">
-                                            <TextBlock Text="Ctrl+Shift+A" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="alt+home" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="TogglePreset_Click">
-                                            <TextBlock Text="Alt+Home" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="ctrl+f11" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,0,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="TogglePreset_Click">
-                                            <TextBlock Text="Ctrl+F11" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                    </WrapPanel>
-                                </StackPanel>
-
-                                <Grid Margin="0,6,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="HKInputA" Tag="1" Height="28" Padding="10,0"
-                                             VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="11"
-                                             Background="{StaticResource Panel2Brush}" Foreground="{StaticResource FgBrush}"
-                                             BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
-                                             KeyDown="HKInput_KeyDown"
-                                             ToolTip="Tulis kombinasi, mis. Win+Shift+F5, lalu Enter"/>
-                                    <Button Grid.Column="1" Content="Set" Width="46" Height="28" Margin="6,0,0,0"
-                                            Cursor="Hand" Background="{StaticResource BlueBrush}" Foreground="White"
-                                            FontWeight="SemiBold" BorderThickness="0" Click="HKInput_Set" Tag="1"/>
-                                </Grid>
-
-                                <Border Padding="10,9" CornerRadius="9"
-                                        Background="{StaticResource RaisedBrush}" Margin="0,0,0,6">
-                                    <Grid>
-                                        <TextBlock Text="Ganti mode" FontSize="13"/>
-                                        <Border HorizontalAlignment="Right" Padding="9,2" CornerRadius="7"
-                                                Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1,1,1,2"
-                                                Cursor="Hand" ToolTip="Klik untuk ganti hotkey"
-                                                MouseLeftButtonDown="HKRecord_Click" Tag="2">
-                                            <TextBlock x:Name="HKLabelM" Text="Ctrl+Alt+M" FontSize="11" FontFamily="Consolas"
-                                                       FontWeight="SemiBold" Foreground="{StaticResource FgBrush}"/>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-
-                                <StackPanel Margin="0,0,0,18">
-                                    <TextBlock Text="Preset cepat (untuk Ganti mode)" FontSize="9.5"
-                                               Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                    <WrapPanel>
-                                        <Border Tag="ctrl+shift+p" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="CyclePreset_Click">
-                                            <TextBlock Text="Ctrl+Shift+P" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="alt+end" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="CyclePreset_Click">
-                                            <TextBlock Text="Alt+End" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="ctrl+f9" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,6,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="CyclePreset_Click">
-                                            <TextBlock Text="Ctrl+F9" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                        <Border Tag="ctrl+alt+t" Cursor="Hand" Padding="8,3" CornerRadius="6"
-                                                Margin="0,0,0,4" Background="{StaticResource PanelBrush}"
-                                                BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                MouseLeftButtonDown="CyclePreset_Click">
-                                            <TextBlock Text="Ctrl+Alt+T" FontSize="10" FontFamily="Consolas"
-                                                       Foreground="{StaticResource MutedBrush}"/>
-                                        </Border>
-                                    </WrapPanel>
-                                </StackPanel>
-
-                                <Grid Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="HKInputM" Tag="2" Height="28" Padding="10,0"
-                                             VerticalContentAlignment="Center" FontFamily="Consolas" FontSize="11"
-                                             Background="{StaticResource Panel2Brush}" Foreground="{StaticResource FgBrush}"
-                                             BorderBrush="{StaticResource LineBrush}" BorderThickness="1"
-                                             KeyDown="HKInput_KeyDown"
-                                             ToolTip="Tulis kombinasi, mis. Ctrl+Alt+T, lalu Enter"/>
-                                    <Button Grid.Column="1" Content="Set" Width="46" Height="28" Margin="6,0,0,0"
-                                            Cursor="Hand" Background="{StaticResource BlueBrush}" Foreground="White"
-                                            FontWeight="SemiBold" BorderThickness="0" Click="HKInput_Set" Tag="2"/>
-                                </Grid>
-
-                                <TextBlock Text="UPDATE" FontSize="10" FontWeight="Bold"
-                                           Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                <Border Padding="10,10" CornerRadius="9"
-                                        Background="{StaticResource RaisedBrush}" Margin="0,0,0,18">
+                                <TextBlock Style="{StaticResource GrpTitle}" Text="SHORTCUT"/>
+                                <Border Style="{StaticResource Tile}" Margin="0,0,0,6">
                                     <StackPanel>
-                                        <Grid>
-                                            <TextBlock Text="Versi terpasang" FontSize="13"/>
-                                            <TextBlock x:Name="InstalledVersion" Text="1.0.0" FontFamily="Consolas" FontSize="12"
-                                                       HorizontalAlignment="Right"
-                                                       Foreground="{StaticResource MutedBrush}"/>
+                                        <Grid MinHeight="34">
+                                            <TextBlock Text="Buka / tutup panel" FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <Border HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center" Style="{StaticResource Kbd}"
+                                                    MouseLeftButtonDown="HKRecord_Click" Tag="1"
+                                                    ToolTip="Klik lalu tekan kombinasi baru">
+                                                <TextBlock x:Name="HKLabelA" Text="Ctrl+Alt+A" FontSize="10"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource FgBrush}"/>
+                                            </Border>
                                         </Grid>
-                                        <Grid Margin="0,10,0,0">
-                                            <StackPanel Orientation="Horizontal">
-                                                <Button x:Name="CheckBtn" Content="Cek Update"
-                                                        Click="CheckUpdate_Click" Cursor="Hand" Padding="12,5"
-                                                        Background="{StaticResource PanelBrush}"
-                                                        BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
-                                                        Foreground="{StaticResource MutedBrush}"
-                                                        FontWeight="SemiBold" FontSize="11.5"/>
-                                                <Button x:Name="DlBtn" Content="Unduh" Visibility="Collapsed"
-                                                        Click="DlBtn_Click" Cursor="Hand" Padding="12,5"
-                                                        Margin="8,0,0,0" Background="{StaticResource BlueBrush}"
-                                                        BorderThickness="0" Foreground="White"
-                                                        FontWeight="SemiBold" FontSize="11.5"/>
-                                            </StackPanel>
-                                            <TextBlock x:Name="UpStatus" Text="" FontSize="11"
-                                                       Foreground="{StaticResource MutedBrush}"
-                                                       HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                       TextWrapping="Wrap" MaxWidth="170"/>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="34">
+                                            <TextBlock Text="Ganti mode daya" FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <Border HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center" Style="{StaticResource Kbd}"
+                                                    MouseLeftButtonDown="HKRecord_Click" Tag="2"
+                                                    ToolTip="Klik lalu tekan kombinasi baru">
+                                                <TextBlock x:Name="HKLabelM" Text="Ctrl+Alt+M" FontSize="10"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource FgBrush}"/>
+                                            </Border>
                                         </Grid>
-                                        <ProgressBar x:Name="UpProgress" Height="5" Margin="0,10,0,0"
-                                                     Minimum="0" Maximum="100" Value="0" Visibility="Collapsed"
-                                                     Foreground="{StaticResource BlueBrush}"
-                                                     Background="#FF262B37" BorderThickness="0"/>
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="SISTEM" FontSize="10" FontWeight="Bold"
-                                           Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                <Border Padding="10,10" CornerRadius="9"
-                                        Background="{StaticResource RaisedBrush}" Margin="0,0,0,18">
+                                <WrapPanel Margin="0,0,0,4">
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+alt+a"
+                                            MouseLeftButtonDown="TogglePreset_Click">
+                                        <TextBlock Text="Ctrl+Alt+A" FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+shift+a"
+                                            MouseLeftButtonDown="TogglePreset_Click">
+                                        <TextBlock Text="Ctrl+Shift+A"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="alt+home"
+                                            MouseLeftButtonDown="TogglePreset_Click">
+                                        <TextBlock Text="Alt+Home" FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+f11"
+                                            MouseLeftButtonDown="TogglePreset_Click">
+                                        <TextBlock Text="Ctrl+F11" FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                </WrapPanel>
+
+                                <Grid Margin="0,2,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="HKInputA" Tag="1" Height="26" Padding="8,0"
+                                             VerticalContentAlignment="Center"
+                                             FontFamily="{StaticResource MonoFont}" FontSize="10.5"
+                                             Background="{StaticResource InsetBrush}"
+                                             Foreground="{StaticResource FgBrush}"
+                                             BorderBrush="{StaticResource Line2Brush}"
+                                             BorderThickness="1" KeyDown="HKInput_KeyDown"
+                                             ToolTip="Tulis kombinasi, mis. Win+Shift+F5, lalu Enter"/>
+                                    <Button Grid.Column="1" Content="Set"
+                                            Style="{StaticResource MiniBtn}"
+                                            Margin="6,0,0,0" Click="HKInput_Set" Tag="1"/>
+                                </Grid>
+
+                                <WrapPanel Margin="0,0,0,4">
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+shift+p"
+                                            MouseLeftButtonDown="CyclePreset_Click">
+                                        <TextBlock Text="Ctrl+Shift+P"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="alt+end"
+                                            MouseLeftButtonDown="CyclePreset_Click">
+                                        <TextBlock Text="Alt+End" FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+f9"
+                                            MouseLeftButtonDown="CyclePreset_Click">
+                                        <TextBlock Text="Ctrl+F9" FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                    <Border Style="{StaticResource Kbd}" Margin="0,0,4,4"
+                                            Padding="6,1" BorderThickness="1" Tag="ctrl+alt+t"
+                                            MouseLeftButtonDown="CyclePreset_Click">
+                                        <TextBlock Text="Ctrl+Alt+T"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="9.5"
+                                                   Foreground="{StaticResource DimBrush}"/>
+                                    </Border>
+                                </WrapPanel>
+
+                                <Grid Margin="0,2,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="HKInputM" Tag="2" Height="26" Padding="8,0"
+                                             VerticalContentAlignment="Center"
+                                             FontFamily="{StaticResource MonoFont}" FontSize="10.5"
+                                             Background="{StaticResource InsetBrush}"
+                                             Foreground="{StaticResource FgBrush}"
+                                             BorderBrush="{StaticResource Line2Brush}"
+                                             BorderThickness="1" KeyDown="HKInput_KeyDown"
+                                             ToolTip="Tulis kombinasi, mis. Ctrl+Alt+T, lalu Enter"/>
+                                    <Button Grid.Column="1" Content="Set"
+                                            Style="{StaticResource MiniBtn}" Margin="6,0,0,0"
+                                            Click="HKInput_Set" Tag="2"/>
+                                </Grid>
+
+                                <TextBlock Style="{StaticResource GrpTitle}" Text="PEMBARUAN"/>
+                                <Border Style="{StaticResource Tile}" Margin="0,0,0,14">
                                     <StackPanel>
-                                        <Grid>
-                                            <TextBlock Text="Otomatis hemat daya saat baterai" FontSize="12.5"
-                                                       TextWrapping="Wrap" Margin="0,0,28,0"/>
-                                            <CheckBox x:Name="ChkAutoBat" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                      Click="ChkAutoBat_Click"
-                                                      ToolTip="Saat colokan dicabut: pindah otomatis ke HEMAT. Saat dicolok ulang: pulihkan mode semula."/>
+                                        <Grid MinHeight="34">
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="Versi terpasang" FontSize="12.5"
+                                                           Foreground="{StaticResource LabelBrush}"/>
+                                                <TextBlock x:Name="InstalledVersion" Text="2.0.0"
+                                                           FontSize="9.5"
+                                                           FontFamily="{StaticResource MonoFont}"
+                                                           Foreground="{StaticResource DimBrush}"
+                                                           Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <Button x:Name="CheckBtn" Content="Cek"
+                                                    HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                    Style="{StaticResource MiniBtn}"
+                                                    Click="CheckUpdate_Click"/>
                                         </Grid>
-                                        <TextBlock Text="Seimbang untuk baterai, tanpa perlu atur manual."
-                                                   FontSize="9.5" Foreground="{StaticResource DimBrush}"
-                                                   Margin="0,4,0,10"/>
-                                        <Grid>
-                                            <TextBlock Text="Jalankan saat startup Windows" FontSize="12.5"/>
-                                            <CheckBox x:Name="ChkStartup" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                      Click="ChkStartup_Click"/>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="34">
+                                            <TextBlock x:Name="UpStatus" Text="Siap memeriksa"
+                                                       FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center" TextWrapping="Wrap"
+                                                       Margin="0,0,8,0"/>
+                                            <Button x:Name="DlBtn" Content="Unduh"
+                                                    Visibility="Collapsed"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    Style="{StaticResource MiniBtnPrimary}"
+                                                    Click="DlBtn_Click"/>
                                         </Grid>
-                                        <TextBlock Text="Hotkey global tetap aktif walau window disembunyikan."
-                                                   FontSize="9.5" Foreground="{StaticResource DimBrush}"
-                                                   Margin="0,4,0,10"/>
-                                        <Grid>
-                                            <TextBlock Text="Minimalkan ke tray" FontSize="12.5"/>
-                                            <CheckBox x:Name="ChkTray" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                      Click="ChkTray_Click"
-                                                      ToolTip="Tombol minus menyimpan app ke system tray, bukan taskbar."/>
+                                        <ProgressBar x:Name="UpProgress" Height="4" Margin="0,2,0,6"
+                                                     Minimum="0" Maximum="100" Value="0"
+                                                     Visibility="Collapsed"
+                                                     Foreground="{StaticResource BlueBrush}"
+                                                     Background="{StaticResource TrackBrush}"
+                                                     BorderThickness="0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <TextBlock Style="{StaticResource GrpTitle}" Text="SISTEM"/>
+                                <Border Style="{StaticResource Tile}" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <Grid MinHeight="42">
+                                            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock Text="Hemat daya saat baterai"
+                                                           FontSize="12.5"
+                                                           Foreground="{StaticResource LabelBrush}"/>
+                                                <TextBlock Text="Pindah ke Hemat saat charger dicabut"
+                                                           FontSize="9.5"
+                                                           Foreground="{StaticResource DimBrush}"
+                                                           Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleButton x:Name="ChkAutoBat"
+                                                          Style="{StaticResource Switch}"
+                                                          HorizontalAlignment="Right"
+                                                          VerticalAlignment="Center"
+                                                          Click="ChkAutoBat_Click"
+                                                          ToolTip="Saat colokan dicabut: pindah otomatis ke Hemat. Saat dicolok ulang: pulihkan mode semula."/>
                                         </Grid>
-                                        <Grid Margin="0,10,0,0">
-                                            <TextBlock Text="Peringatan baterai rendah" FontSize="12.5"/>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                <TextBox x:Name="BatWarn" Width="44" Height="24" FontSize="12"
-                                                         VerticalContentAlignment="Center" FontFamily="Consolas"
-                                                         Background="{StaticResource Panel2Brush}"
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="42">
+                                            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock Text="Jalankan saat startup" FontSize="12.5"
+                                                           Foreground="{StaticResource LabelBrush}"/>
+                                                <TextBlock Text="Hotkey tetap aktif walau panel disembunyikan"
+                                                           FontSize="9.5"
+                                                           Foreground="{StaticResource DimBrush}"
+                                                           Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleButton x:Name="ChkStartup"
+                                                          Style="{StaticResource Switch}"
+                                                          HorizontalAlignment="Right"
+                                                          VerticalAlignment="Center"
+                                                          Click="ChkStartup_Click"/>
+                                        </Grid>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="42">
+                                            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock Text="Minimalkan ke tray" FontSize="12.5"
+                                                           Foreground="{StaticResource LabelBrush}"/>
+                                                <TextBlock Text="Tombol minus menyembunyikan panel ke system tray"
+                                                           FontSize="9.5"
+                                                           Foreground="{StaticResource DimBrush}"
+                                                           Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <ToggleButton x:Name="ChkTray"
+                                                          Style="{StaticResource Switch}"
+                                                          HorizontalAlignment="Right"
+                                                          VerticalAlignment="Center"
+                                                          Click="ChkTray_Click"/>
+                                        </Grid>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="42">
+                                            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock Text="Peringatan baterai rendah"
+                                                           FontSize="12.5"
+                                                           Foreground="{StaticResource LabelBrush}"/>
+                                                <TextBlock Text="Notifikasi tray saat baterai menyentuh ambang"
+                                                           FontSize="9.5"
+                                                           Foreground="{StaticResource DimBrush}"
+                                                           Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Center">
+                                                <TextBox x:Name="BatWarn" Width="38" Height="24"
+                                                         FontSize="11"
+                                                         VerticalContentAlignment="Center"
+                                                         HorizontalContentAlignment="Center"
+                                                         FontFamily="{StaticResource MonoFont}"
+                                                         Background="{StaticResource InsetBrush}"
                                                          Foreground="{StaticResource FgBrush}"
-                                                         BorderBrush="{StaticResource LineBrush}"
+                                                         BorderBrush="{StaticResource Line2Brush}"
                                                          BorderThickness="1" KeyDown="BatWarn_KeyDown"
                                                          ToolTip="Bubble tray saat % baterai ≤ ambang ini (5–100)"/>
-                                                <TextBlock Text="%" FontSize="11" VerticalAlignment="Center"
-                                                           Margin="4,0,0,0"
-                                                           Foreground="{StaticResource MutedBrush}"/>
+                                                <TextBlock Text="%" FontSize="10"
+                                                           VerticalAlignment="Center"
+                                                         Margin="4,0,0,0"
+                                                         Foreground="{StaticResource MutedBrush}"/>
                                             </StackPanel>
                                         </Grid>
                                     </StackPanel>
                                 </Border>
 
-                                <TextBlock Text="ABOUT" FontSize="10" FontWeight="Bold"
-                                           Foreground="{StaticResource DimBrush}" Margin="0,0,0,6"/>
-                                <Grid Margin="0,0,0,6">
-                                    <TextBlock Text="Versi" FontSize="13"/>
-                                    <TextBlock x:Name="AboutVersion" Text="1.0.0" FontFamily="Consolas" FontSize="12"
-                                               HorizontalAlignment="Right"
-                                               Foreground="{StaticResource MutedBrush}"/>
-                                </Grid>
-                                <Grid Margin="0,0,0,6">
-                                    <TextBlock Text="Build" FontSize="13"/>
-                                    <TextBlock x:Name="BuildText" Text="—" FontFamily="Consolas" FontSize="12"
-                                               HorizontalAlignment="Right"
-                                               Foreground="{StaticResource MutedBrush}"/>
-                                </Grid>
-                                <Grid>
-                                    <TextBlock Text="Selftest" FontSize="13"/>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <Ellipse Width="6" Height="6" Fill="{StaticResource GreenBrush}"
-                                                 VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                        <TextBlock Text="OK" Foreground="{StaticResource GreenBrush}"
-                                                   FontWeight="Bold" FontSize="11"/>
+                                <TextBlock Style="{StaticResource GrpTitle}" Text="TENTANG"/>
+                                <Border Style="{StaticResource Tile}">
+                                    <StackPanel>
+                                        <Grid MinHeight="30">
+                                            <TextBlock Text="Versi" FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="AboutVersion" Text="2.0.0"
+                                                       FontSize="11"
+                                                       FontFamily="{StaticResource MonoFont}"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{StaticResource FgBrush}"/>
+                                        </Grid>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="30">
+                                            <TextBlock Text="Build" FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="BuildText" Text="—" FontSize="11"
+                                                       FontFamily="{StaticResource MonoFont}"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{StaticResource MutedBrush}"/>
+                                        </Grid>
+                                        <Border Style="{StaticResource RowDivider}"/>
+                                        <Grid MinHeight="30">
+                                            <TextBlock Text="Selftest" FontSize="12.5"
+                                                       Foreground="{StaticResource LabelBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <Border HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center" Style="{StaticResource Pill}"
+                                                    Background="{StaticResource GreenSoftBrush}"
+                                                    BorderBrush="{StaticResource GreenLineBrush}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Style="{StaticResource PillDot}"
+                                                             Fill="{StaticResource GreenBrush}"/>
+                                                    <TextBlock Text="OK" Style="{StaticResource PillText}"
+                                                               Foreground="{StaticResource GreenBrush}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
                                     </StackPanel>
-                                </Grid>
+                                </Border>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>

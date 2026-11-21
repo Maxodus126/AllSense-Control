@@ -60,8 +60,20 @@ internal sealed class TrayIcon : IDisposable
             };
             g.FillPolygon(bolt, pts);
         }
-        return Icon.FromHandle(bmp.GetHicon());
+        // GetHicon mengalokasikan HICON GDI yang tidak pernah dilepas ikon hasil
+        // FromHandle. Salin HICON ke managed Icon lalu hancurkan handle aslinya
+        // (kalau tidak: kebocoran GDI, satu handle tiap start/toggle tray).
+        var hicon = bmp.GetHicon();
+        try
+        {
+            using var tmp = Icon.FromHandle(hicon);
+            return (Icon)tmp.Clone();
+        }
+        finally { DestroyIcon(hicon); }
     }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+    private static extern bool DestroyIcon(IntPtr hIcon);
 
     private static GraphicsPath RoundRect(float x, float y, float w, float h, float r)
     {
@@ -79,6 +91,7 @@ internal sealed class TrayIcon : IDisposable
     {
         if (_icon is null) return;
         _icon.Visible = false;
+        _icon.Icon?.Dispose();
         _icon.Dispose();
     }
 }

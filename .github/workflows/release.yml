@@ -34,6 +34,14 @@ jobs:
           Copy-Item publish\installer\AllSenseSetup.exe "bundle\AllSense setup.exe"
           Copy-Item app\AllSense.App\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\AllSense.exe "bundle\AllSense.exe"
 
+      - name: Compute SHA-256 checksum
+        id: hash
+        shell: pwsh
+        run: |
+          $h = (Get-FileHash -Algorithm SHA256 "bundle\AllSense.exe").Hash.ToLowerInvariant()
+          Write-Output "hash=$h" >> $env:GITHUB_OUTPUT
+          Write-Output "SHA-256: $h"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -43,6 +51,8 @@ jobs:
             Rilis otomatis AllSense Control ${{ github.ref_name }}.
             - `AllSense setup.exe` — installer (dengan konfirmasi pemasangan)
             - `AllSense.exe` — payload untuk self-update
+
+            sha256:${{ steps.hash.outputs.hash }}
           files: |
             bundle/AllSense setup.exe
             bundle/AllSense.exe

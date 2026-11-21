@@ -3,41 +3,79 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- WPF menulis warna 8-digit sebagai AARRGGBB (alpha dulu) -->
-        <SolidColorBrush x:Key="BgBrush" Color="#FF07080B"/>
-        <SolidColorBrush x:Key="PanelBrush" Color="#FF101219"/>
-        <SolidColorBrush x:Key="Panel2Brush" Color="#FF161A23"/>
-        <SolidColorBrush x:Key="RaisedBrush" Color="#FF1C212D"/>
-        <SolidColorBrush x:Key="TrackBrush" Color="#FF262B37"/>
-        <SolidColorBrush x:Key="LineBrush" Color="#12FFFFFF"/>
-        <SolidColorBrush x:Key="Line2Brush" Color="#21FFFFFF"/>
-        <SolidColorBrush x:Key="FgBrush" Color="#FFEEF0F5"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#FF97A0AE"/>
-        <SolidColorBrush x:Key="DimBrush" Color="#FF596272"/>
+
+        <!-- ═══ token warna ═══
+             WPF menulis 8-digit sebagai AARRGGBB (alpha dulu).
+             Skala permukaan: kanvas → kartu → tile → inset (4 tingkat). -->
+        <SolidColorBrush x:Key="BgBrush" Color="#FF08090D"/>
+        <SolidColorBrush x:Key="CardBrush" Color="#FF101218"/>
+        <SolidColorBrush x:Key="CardHiBrush" Color="#FF151821"/>
+        <SolidColorBrush x:Key="InsetBrush" Color="#FF0B0D13"/>
+        <SolidColorBrush x:Key="TrackBrush" Color="#FF1B1F29"/>
+
+        <SolidColorBrush x:Key="LineBrush" Color="#11FFFFFF"/>
+        <SolidColorBrush x:Key="Line2Brush" Color="#1FFFFFFF"/>
+
+        <!-- teks: fg, label, muted, dim -->
+        <SolidColorBrush x:Key="FgBrush" Color="#FFF1F3F8"/>
+        <SolidColorBrush x:Key="LabelBrush" Color="#FFC9D0DB"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#FF8D96A6"/>
+        <SolidColorBrush x:Key="DimBrush" Color="#FF6E7686"/>
+
         <SolidColorBrush x:Key="RedBrush" Color="#FFFF4356"/>
         <SolidColorBrush x:Key="BlueBrush" Color="#FF4D8DFF"/>
         <SolidColorBrush x:Key="GreenBrush" Color="#FF35C973"/>
         <SolidColorBrush x:Key="AmberBrush" Color="#FFFFB020"/>
 
-        <!-- versi lembut (alpha rendah) utk latar badge/toggle aktif -->
-        <SolidColorBrush x:Key="RedSoftBrush" Color="#1FFF4356"/>
-        <SolidColorBrush x:Key="BlueSoftBrush" Color="#1F4D8DFF"/>
-        <SolidColorBrush x:Key="GreenSoftBrush" Color="#1C35C973"/>
-        <SolidColorBrush x:Key="AmberSoftBrush" Color="#1CFFB020"/>
+        <SolidColorBrush x:Key="RedSoftBrush" Color="#1AFF4356"/>
+        <SolidColorBrush x:Key="BlueSoftBrush" Color="#1A4D8DFF"/>
+        <SolidColorBrush x:Key="GreenSoftBrush" Color="#1735C973"/>
+        <SolidColorBrush x:Key="AmberSoftBrush" Color="#1AFFB020"/>
 
-        <!-- border berwarna tipis -->
-        <SolidColorBrush x:Key="RedLineBrush" Color="#52FF4356"/>
-        <SolidColorBrush x:Key="BlueLineBrush" Color="#524D8DFF"/>
-        <SolidColorBrush x:Key="GreenLineBrush" Color="#5935C973"/>
-        <SolidColorBrush x:Key="AmberLineBrush" Color="#52FFB020"/>
+        <SolidColorBrush x:Key="RedLineBrush" Color="#42FF4356"/>
+        <SolidColorBrush x:Key="BlueLineBrush" Color="#424D8DFF"/>
+        <SolidColorBrush x:Key="GreenLineBrush" Color="#4235C973"/>
+        <SolidColorBrush x:Key="AmberLineBrush" Color="#42FFB020"/>
+
+        <!-- ═══ tipografi ═══
+             Hanya font bawaan Windows: Segoe UI Variable (Win11) → Segoe UI (Win10),
+             Cascadia Mono (Win11) → Consolas (Win10). -->
+        <FontFamily x:Key="UiFont">Segoe UI Variable Text, Segoe UI</FontFamily>
+        <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas</FontFamily>
 
         <Style TargetType="Window">
             <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
-            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontFamily" Value="{StaticResource UiFont}"/>
             <Setter Property="FontSize" Value="13"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
         </Style>
 
-        <!-- CheckBox tema gelap (kustom, konsisten dgn panel) -->
+        <!-- tombol ikon polos (header, sheet) -->
+        <Style x:Key="GhostBtn" TargetType="Button">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="8" Background="Transparent"
+                                BorderBrush="Transparent" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#0EFFFFFF"/>
+                                <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource LineBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- CheckBox tema gelap -->
         <Style TargetType="CheckBox">
             <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -46,7 +84,7 @@
                     <ControlTemplate TargetType="CheckBox">
                         <StackPanel Orientation="Horizontal" Background="Transparent">
                             <Border x:Name="box" Width="18" Height="18" CornerRadius="5"
-                                    Background="{StaticResource Panel2Brush}"
+                                    Background="{StaticResource InsetBrush}"
                                     BorderBrush="{StaticResource Line2Brush}" BorderThickness="1"
                                     VerticalAlignment="Center">
                                 <Path x:Name="check" Data="M4 9.5l3.5 3.5L14 6"

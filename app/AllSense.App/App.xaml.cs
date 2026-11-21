@@ -11,6 +11,7 @@ public partial class App : System.Windows.Application
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AllSense");
 
     private static Mutex? _mutex;
+    private static bool _ownsMutex;
 
     internal const string SmokeEnv = "ALLSENSE_SMOKE_TEST";
     internal static bool IsSmokeTest => Environment.GetEnvironmentVariable(SmokeEnv) == "1";
@@ -40,6 +41,7 @@ public partial class App : System.Windows.Application
 
         // Single-instance: cegah dua proses berjalan (hotkey global saling rebut).
         _mutex = new Mutex(true, "AllSense.SingleInstance", out var fresh);
+        _ownsMutex = fresh;
         if (!fresh)
         {
             ActivateExisting();
@@ -54,7 +56,7 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(System.Windows.ExitEventArgs e)
     {
-        try { _mutex?.ReleaseMutex(); } catch { }
+        if (_ownsMutex) { try { _mutex?.ReleaseMutex(); } catch { } }
         base.OnExit(e);
     }
 

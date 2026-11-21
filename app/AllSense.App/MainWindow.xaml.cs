@@ -28,10 +28,15 @@ public partial class MainWindow : Window
     private int _awaitingHotKey;
     private TrayIcon? _tray;
     private EventWaitHandle? _wake;
-    private bool _wasOnAc = NativeInterop.GetPowerStatus().onAc;
+    private volatile bool _wasOnAc = NativeInterop.GetPowerStatus().onAc;
     private PowerMode? _restoreOnAc;
     private bool _batteryWarned;
     private bool _quitRequested;
+    private int _tickCounter;
+    private bool _settingsDirty;
+    private DispatcherTimer? _saveTimer;
+    private bool _checking;
+    private (bool ac, int pct) _lastBatt = (false, -2); // -2 = belum pernah
 
     private static readonly (int Mods, int Vk)[] ToggleFallback =
     {
@@ -46,19 +51,46 @@ public partial class MainWindow : Window
         (NativeInterop.MOD_CONTROL | NativeInterop.MOD_ALT, (int)NativeInterop.VK_N),
     };
 
-    private static readonly Brush Panel2 = BrushFrom("#FF1A1E28");
-    private static readonly Brush Raised = BrushFrom("#FF1C212D");
-    private static readonly Brush Line = BrushFrom("#12FFFFFF");
-    private static readonly Brush Fg = BrushFrom("#FFEEF0F5");
-    private static readonly Brush Muted = BrushFrom("#FF97A0AE");
-    private static readonly Brush Dim = BrushFrom("#FF596272");
+    private static readonly Brush Panel2 = BrushFrom("#FF151821");
+    private static readonly Brush Raised = BrushFrom("#00151821");
+    private static readonly Brush Line = BrushFrom("#11FFFFFF");
+    private static readonly Brush Label = BrushFrom("#FFC9D0DB");
+    private static readonly Brush Muted = BrushFrom("#FF8D96A6");
+    private static readonly Brush Dim = BrushFrom("#FF6E7686");
     private static readonly Brush Amber = BrushFrom("#FFFFB020");
     private static readonly Brush Blue = BrushFrom("#FF4D8DFF");
     private static readonly Brush Red = BrushFrom("#FFFF4356");
     private static readonly Brush Green = BrushFrom("#FF35C973");
+    private static readonly Brush LineGreen = BrushFrom("#9935C973");
+    private static readonly Brush PillIdle = BrushFrom("#08FFFFFF");
 
-    private static Brush BrushFrom(string hex) =>
-        new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+    // Brush lembut di-cache: dulu dibikin baru tiap tick timer (2 dtk) → sampah GC terus.
+    private static readonly Brush SoftGreen = Soft(Green);
+    private static readonly Brush SoftBlue = Soft(Blue);
+    private static readonly Brush SoftRed = Soft(Red);
+    private static readonly Brush SoftAmber = Soft(Amber);
+
+    private static Brush BrushFrom(string hex)
+    {
+        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
+        b.Freeze(); // brush statis read-only → hemat memori & aman lintas thread
+        return b;
+    }
+
+    private static Brush Soft(Brush accent)
+    {
+        var c = ((SolidColorBrush)accent).Color;
+        var b = new SolidColorBrush(Color.FromArgb(30, c.R, c.G, c.B));
+        b.Freeze(); // read-only → dipakai lintas thread & hemat
+        return b;
+    }
+
+    private static Brush SoftOf(Brush accent) =>
+        ReferenceEquals(accent, Green) ? SoftGreen
+        : ReferenceEquals(accent, Blue) ? SoftBlue
+        : ReferenceEquals(accent, Red) ? SoftRed
+        : ReferenceEquals(accent, Amber) ? SoftAmber
+        : Soft(accent);
 
     public MainWindow()
     {
@@ -80,10 +112,10 @@ public partial class MainWindow : Window
         // Refleksikan kondisi aktual hardware; jangan paksa. Terapkan hanya saat user menggeser.
         var bright = BrightnessControl.Current() ?? _settings.Brightness;
         BrightSlider.Value = Math.Clamp(bright, BrightSlider.Minimum, BrightSlider.Maximum);
-        if (VolumeControl.Available)
+        if (VolumeControl.GetState() is var vs && vs.Available)
         {
-            VolSlider.Value = Math.Clamp(VolumeControl.GetLevel() * 100d, VolSlider.Minimum, VolSlider.Maximum);
-            MuteTog.IsChecked = VolumeControl.GetMute();
+            VolSlider.Value = Math.Clamp(vs.Level * 100d, VolSlider.Minimum, VolSlider.Maximum);
+            MuteTog.IsChecked = vs.Mute;
         }
         else
         {
@@ -102,11 +134,16 @@ public partial class MainWindow : Window
         {
             // Baterai wajib selalu dicek (peringatan rendah tetap aktif walau window di-tray).
             RefreshBattery();
-            // Idle ringan: polling hardware (WMI) hanya saat window terlihat.
+            // Idle ringan: polling hardware (WMI/NAudio/WinRT) HANYA saat window terlihat.
+            // Bila disembunyikan, tidak ada polling radio/hardware sama sekali → RAM & CPU hemat.
             if (Visibility != Visibility.Visible) return;
+            // Radio (Wi-Fi/BT) di-update tiap 30 dtk: user/OS bisa mengubah status tanpa panel restart.
+            if (++_tickCounter % 15 == 0) _ = LoadRadiosAsync();
             RefreshHardwareState();
         };
         _timer.Start();
+        _saveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(400) };
+        _saveTimer.Tick += (_, _) => { _saveTimer.Stop(); if (_settingsDirty) { _settingsDirty = false; _settings.Save(); } };
         RefreshBattery();
         RefreshHardwareState();
         InitSystemFeatures();
@@ -116,6 +153,10 @@ public partial class MainWindow : Window
 
         Loaded += (_, _) =>
         {
+            // SizeToContent: Height belum terukur di constructor (NaN).
+            // Ukur ulang di sini supaya panel benar-benar nempel kanan-bawah saat start.
+            DockRight();
+
             _hWnd = new WindowInteropHelper(this).Handle;
             ApplyHotkeyBindings();
             var src = (HwndSource)PresentationSource.FromVisual(this)!;
@@ -207,12 +248,21 @@ public partial class MainWindow : Window
 
     private void OnPowerModeChanged(object? sender, PowerModeChangedEventArgs e)
     {
-        // Transisi AC <-> baterai. Hanya bertindak bila opsi aktif.
+        // SystemEvents.PowerModeChanged diangkat di thread ThreadPool →
+        // jangan sentuh UI di sini. Baca status murah, lalu delegasikan
+        // ke Dispatcher agar ApplyModeVisual dan _osd.Show jalan di thread UI.
         var (ac, _) = NativeInterop.GetPowerStatus();
         if (ac == _wasOnAc) return;
         _wasOnAc = ac;
-        if (!_settings.AutoPowerOnBattery) return;
+        // BeginInvoke (bukan Invoke sinkron): thread ThreadPool tidak boleh
+        // diblokir menunggu UI, khususnya saat shutdown/teardown bisa menggantung.
+        try { Dispatcher.BeginInvoke(() => OnPowerModeChangedCore(ac)); }
+        catch { /* dispatcher sedang shutdown */ }
+    }
 
+    private void OnPowerModeChangedCore(bool ac)
+    {
+        if (!_settings.AutoPowerOnBattery) return;
         if (!ac)
         {
             if (_mode != PowerMode.Efficiency)
@@ -254,18 +304,12 @@ public partial class MainWindow : Window
     private static void StyleMode(Border bd, System.Windows.Shapes.Path icon,
         TextBlock cap, TextBlock sub, bool on, Brush accent)
     {
-        bd.Background = on ? Soft(accent) : Raised;
-        bd.BorderBrush = on ? accent : Line;
+        bd.Background = on ? SoftOf(accent) : Raised;
+        bd.BorderBrush = on ? accent : Brushes.Transparent;
         bd.BorderThickness = new Thickness(1);
         icon.Stroke = on ? accent : Dim;
-        cap.Foreground = on ? Fg : Muted;
+        cap.Foreground = on ? Label : Muted;
         sub.Foreground = on ? accent : Dim;
-    }
-
-    private static Brush Soft(Brush accent)
-    {
-        var c = ((SolidColorBrush)accent).Color;
-        return new SolidColorBrush(Color.FromArgb(30, c.R, c.G, c.B));
     }
 
     // ---------- wifi / bt (indikator status saja) ----------
@@ -279,27 +323,21 @@ public partial class MainWindow : Window
 
     private void StyleRadio(bool? wifiOn, bool? btOn)
     {
-        StyleRadioOne(wifiOn, WifiT, WifiIcWrap, WifiIc, WifiLbl, WifiDot, WifiSt);
-        StyleRadioOne(btOn, BtT, BtIcWrap, BtIc, BtLbl, BtDot, BtSt);
+        StyleRadioOne(wifiOn, WifiT, WifiDot, WifiSt);
+        StyleRadioOne(btOn, BtT, BtDot, BtSt);
     }
 
-    private static void StyleRadioOne(bool? on, Border card, Border wrap,
-        System.Windows.Shapes.Path icon, TextBlock lbl, System.Windows.Shapes.Ellipse dot, TextBlock st)
+    private static void StyleRadioOne(bool? on, Border card, System.Windows.Shapes.Ellipse dot, TextBlock st)
     {
         var active = on == true;
         var unknown = on is null;
-        card.Background = active ? Soft(Green) : Raised;
-        card.BorderBrush = active ? LineGreen() : Line;
+        card.Background = active ? SoftGreen : PillIdle;
+        card.BorderBrush = active ? LineGreen : Line;
         card.BorderThickness = new Thickness(1);
-        wrap.Background = active ? Soft(Green) : BrushFrom("#FF20242F");
-        icon.Stroke = active ? Green : Dim;
-        lbl.Foreground = active ? Fg : Muted;
         dot.Fill = active ? Green : Dim;
         st.Foreground = active ? Green : Dim;
         st.Text = unknown ? "?" : (active ? "ON" : "OFF");
     }
-
-    private static Brush LineGreen() => BrushFrom("#9935C973");
 
     // ---------- screen ----------
     private void UpdateScreenInfo()
@@ -313,11 +351,26 @@ public partial class MainWindow : Window
     private void RefreshBattery()
     {
         var (ac, pct) = NativeInterop.GetPowerStatus();
-        AcChip.Background = ac ? Soft(Green) : Panel2;
-        AcChip.BorderBrush = ac ? LineGreen() : Line;
+        // Skip penulisan UI bila tidak ada perubahan → nol alokasi string saat idle
+        // (sebelumnya $"" dibuat ulang tiap 2 dtk walau nilainya sama).
+        if (ac == _lastBatt.ac && pct == _lastBatt.pct) return;
+        _lastBatt = (ac, pct);
+
+        AcChip.Background = ac ? SoftGreen : Panel2;
+        AcChip.BorderBrush = ac ? LineGreen : Line;
         AcText.Foreground = ac ? Green : Muted;
-        if (pct >= 0) BatteryText.Text = $"{pct}% · {(ac ? "AC" : "BAT")}";
-        AcText.Text = $"{(ac ? "AC" : "BAT")} · {(pct >= 0 ? pct + "%" : "—")}";
+        if (pct >= 0)
+        {
+            BatteryText.Text = $"{pct}% · {(ac ? "AC" : "BAT")}";
+            AcText.Text = $"{(ac ? "AC" : "BAT")} · {(pct >= 0 ? pct + "%" : "—")}";
+            BatBar.Width = pct / 100d * 46;
+        }
+        else
+        {
+            BatteryText.Text = "—";
+            AcText.Text = $"{(ac ? "AC" : "BAT")} · —";
+            BatBar.Width = 0;
+        }
 
         CheckLowBattery(ac, pct);
     }
@@ -331,7 +384,37 @@ public partial class MainWindow : Window
         }
         if (_batteryWarned) return;
         _batteryWarned = true;
-        _tray?.Balloon("Baterai rendah", $"{pct}% tersisa. Colokkan charger.");
+        if (_tray is not null)
+            _tray.Balloon("Baterai rendah", $"{pct}% tersisa. Colokkan charger.");
+        else
+            ShowBatteryToast(pct);
+    }
+
+    private void ShowBatteryToast(int pct)
+    {
+        // Tanpa tray (TrayMode mati) → peringatan muncul sebagai toast
+        // window selip di kanan-bawah, lalu menghilang sendiri.
+        var t = new ToastWindow
+        {
+            Left = SystemParameters.WorkArea.Right - 260,
+            Top = SystemParameters.WorkArea.Bottom - 80,
+            NoticeTitle = "Baterai rendah",
+            NoticeBody = $"{pct}% tersisa. Colokkan charger.",
+        };
+        t.Show();
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(4000);
+            try
+            {
+                if (System.Windows.Application.Current is not null)
+                    await System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (t.IsLoaded) t.Close();
+                    });
+            }
+            catch { }
+        });
     }
 
     // ---------- sinkronkan slider dengan perubahan hardware eksternal (Fn/OS) ----------
@@ -349,10 +432,8 @@ public partial class MainWindow : Window
             {
                 int? b = null;
                 if (doBright) b = BrightnessControl.Current();
-                float vol = -1f;
-                bool mute = false;
-                if (VolumeControl.Available) { vol = VolumeControl.GetLevel(); mute = VolumeControl.GetMute(); }
-                return (b, vol, mute);
+                var vs = VolumeControl.GetState();
+                return (b, vol: vs.Available ? vs.Level : -1f, mute: vs.Mute);
             });
 
             if (!BrightSlider.IsMouseCaptured && snap.b.HasValue)
@@ -383,7 +464,10 @@ public partial class MainWindow : Window
                 }
             }
         }
-        catch { }
+        catch (Exception ex)
+        {
+            try { File.AppendAllText(Path.Combine(App.LocalDir, "crash.log"), $"[{DateTime.Now:u}] RefreshHardware: {ex}\n\n"); } catch { }
+        }
         finally { _syncBusy = false; }
     }
 
@@ -396,7 +480,7 @@ public partial class MainWindow : Window
         if (BrightnessControl.CanSet)
             BrightnessControl.Set((int)e.NewValue);
         _settings.Brightness = (int)e.NewValue;
-        _settings.Save();
+        ScheduleSave();
     }
 
     private void VolSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -406,7 +490,7 @@ public partial class MainWindow : Window
         if (_suppressApply) return;
         VolumeControl.SetLevel((float)(e.NewValue / 100d));
         _settings.Volume = (int)e.NewValue;
-        _settings.Save();
+        ScheduleSave();
     }
 
     private void Mute_Changed(object sender, RoutedEventArgs e)
@@ -415,7 +499,13 @@ public partial class MainWindow : Window
         var m = MuteTog.IsChecked == true;
         VolumeControl.SetMute(m);
         _settings.Mute = m;
-        _settings.Save();
+        ScheduleSave();
+    }
+
+    private void ScheduleSave()
+    {
+        _settingsDirty = true;
+        if (_saveTimer != null && !_saveTimer.IsEnabled) _saveTimer.Start();
     }
 
     // ---------- overlay / header / exit ----------
@@ -507,31 +597,44 @@ public partial class MainWindow : Window
     // Cek otomatis saat startup; hening, hanya muncul bila ada versi baru.
     private async Task AutoCheckUpdate()
     {
-        var up = await Task.Run(() => Updater.CheckAsync());
-        if (up is not null && Updater.IsNewer(up.Version) && _pending is null)
+        if (Interlocked.Exchange(ref _checking, true)) return;
+        try
         {
-            _pending = up;
-            UpStatus.Text = $"Versi {up.Version} tersedia";
-            DlBtn.Visibility = Visibility.Visible;
+            var up = await Task.Run(() => Updater.CheckAsync());
+            if (up is not null && Updater.IsNewer(up.Version) && _pending is null)
+            {
+                _pending = up;
+                UpStatus.Text = $"Versi {up.Version} tersedia";
+                DlBtn.Visibility = Visibility.Visible;
+            }
         }
+        finally { _checking = false; }
     }
 
     private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
     {
+        if (Interlocked.Exchange(ref _checking, true)) return;
         CheckBtn.IsEnabled = false;
         UpStatus.Text = "Memeriksa…";
-        var up = await Task.Run(() => Updater.CheckAsync());
-        if (up is null)
-            UpStatus.Text = "Gagal / tidak ada pembaruan";
-        else if (!Updater.IsNewer(up.Version))
-            UpStatus.Text = "Sudah versi terbaru";
-        else
+        try
         {
-            _pending = up;
-            UpStatus.Text = $"Versi {up.Version} tersedia";
-            DlBtn.Visibility = Visibility.Visible;
+            var up = await Task.Run(() => Updater.CheckAsync());
+            if (up is null)
+                UpStatus.Text = "Gagal / tidak ada pembaruan";
+            else if (!Updater.IsNewer(up.Version))
+                UpStatus.Text = "Sudah versi terbaru";
+            else
+            {
+                _pending = up;
+                UpStatus.Text = $"Versi {up.Version} tersedia";
+                DlBtn.Visibility = Visibility.Visible;
+            }
         }
-        CheckBtn.IsEnabled = true;
+        finally
+        {
+            CheckBtn.IsEnabled = true;
+            _checking = false;
+        }
     }
 
     private async void DlBtn_Click(object sender, RoutedEventArgs e)
@@ -541,7 +644,7 @@ public partial class MainWindow : Window
         UpProgress.Visibility = Visibility.Visible;
         UpProgress.Value = 0;
 
-        var dest = await Task.Run(() => Updater.DownloadAsync(_pending.Url, _pending.Version,
+        var dest = await Task.Run(() => Updater.DownloadAsync(_pending.Url, _pending.Version, _pending.Sha256,
             p => UpProgress.Dispatcher.Invoke(() => UpProgress.Value = p)));
 
         UpProgress.Visibility = Visibility.Collapsed;
@@ -552,45 +655,53 @@ public partial class MainWindow : Window
             return;
         }
 
-        var apply = MessageBox.Show("Update siap. Terapkan sekarang? Aplikasi akan ditutup dan restart otomatis.",
-            "AllSense Control", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
-        if (!apply)
-        {
-            UpStatus.Text = "Unduhan selesai. Terapkan nanti lewat tombol berversi.";
-            DlBtn.IsEnabled = true;
-            return;
-        }
-
-        if (!Updater.CanSelfReplace())
-        {
-            UpStatus.Text = "Lokasi instal butuh admin — jalankan sekali sebagai admin";
-            DlBtn.IsEnabled = true;
-            return;
-        }
-
-        // Smoke-test build baru SEBELUM menutup app: kalau gagal boot
-        // (window tak muncul), tolak update & pertahankan versi lama.
-        var smokeOk = await Task.Run(() => Updater.SmokeTestAsync(dest));
-        if (!smokeOk)
-        {
-            UpStatus.Text = "Update ditolak: build baru gagal smoke-test (versi sekarang tetap dipakai).";
-            DlBtn.IsEnabled = true;
-            try { File.Delete(dest); } catch { }
-            return;
-        }
-
-        var script = Updater.StageAndRestart(dest);
         try
         {
+            var apply = MessageBox.Show("Update siap. Terapkan sekarang? Aplikasi akan ditutup dan restart otomatis.",
+                "AllSense Control", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+            if (!apply)
+            {
+                UpStatus.Text = "Unduhan dibatalkan.";
+                DlBtn.IsEnabled = true;
+                try { File.Delete(dest); } catch { }
+                return;
+            }
+
+            if (!Updater.CanSelfReplace())
+            {
+                UpStatus.Text = "Lokasi instal butuh admin — jalankan sekali sebagai admin";
+                DlBtn.IsEnabled = true;
+                return;
+            }
+
+            // Smoke-test build baru SEBELUM menutup app: kalau gagal boot
+            // (window tak muncul), tolak update & pertahankan versi lama.
+            var smokeOk = await Task.Run(() => Updater.SmokeTestAsync(dest));
+            if (!smokeOk)
+            {
+                UpStatus.Text = "Update ditolak: build baru gagal smoke-test (versi sekarang tetap dipakai).";
+                DlBtn.IsEnabled = true;
+                try { File.Delete(dest); } catch { }
+                return;
+            }
+
+            var script = Updater.StageAndRestart(dest);
             Process.Start(new ProcessStartInfo("cmd.exe", $" /c start /b \"\" \"{script}\"")
             {
                 UseShellExecute = false,
                 CreateNoWindow = true,
             });
+            _quitRequested = true;
+            Close();
         }
-        catch { }
-        _quitRequested = true;
-        Close();
+        catch (Exception ex)
+        {
+            // Jangan tutup app di tengah update yang gagal; log & pulihkan UI.
+            try { File.AppendAllText(Path.Combine(App.LocalDir, "crash.log"), $"[{DateTime.Now:u}] ApplyUpdate: {ex}\n\n"); } catch { }
+            UpStatus.Text = "Update gagal diterapkan.";
+            DlBtn.IsEnabled = true;
+            try { File.Delete(dest); } catch { }
+        }
     }
 
     // ---------- docking ----------
@@ -735,6 +846,8 @@ public partial class MainWindow : Window
         HKLabelA.Text = _hkToggleLabel ?? "— bentrok —";
         HKLabelM.Text = _hkCycleLabel ?? "— bentrok —";
         HKLabelA.Foreground = HKLabelM.Foreground = Muted;
+        HKFootA.Text = _hkToggleLabel ?? "—";
+        HKFootM.Text = _hkCycleLabel ?? "—";
         if (!HKInputA.IsKeyboardFocused) HKInputA.Text = _hkToggleLabel ?? "";
         if (!HKInputM.IsKeyboardFocused) HKInputM.Text = _hkCycleLabel ?? "";
     }
@@ -781,6 +894,9 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        _timer.Stop();
+        _saveTimer?.Stop();
+        if (_settingsDirty) { _settingsDirty = false; _settings.Save(); }
         var h = new WindowInteropHelper(this).Handle;
         NativeInterop.UnregisterHotKey(h, 1);
         NativeInterop.UnregisterHotKey(h, 2);

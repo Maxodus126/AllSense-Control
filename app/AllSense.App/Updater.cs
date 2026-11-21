@@ -2,13 +2,14 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AllSense;
 
-public sealed record UpdateInfo(string Version, string Url);
+public sealed record UpdateInfo(string Version, string Url, string Sha256);
 
 /// <summary>
 /// Self-update via GitHub Releases. Alur:
@@ -20,7 +21,7 @@ public static class Updater
     private const string Repo = "Maxodus126/AllSense-Control";
     private const string LatestUrl = $"https://api.github.com/repos/{Repo}/releases/latest";
 
-    private static readonly HttpClient Http = new();
+    private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };
     private static readonly JsonDocumentOptions JsonOpts = new() { AllowTrailingCommas = true };
 
     /// <summary>Ambil info rilis terbaru dari GitHub. Tag vX.Y.Z + asset payload AllSense.exe.</summary>
@@ -48,12 +49,43 @@ public static class Updater
                     if (name is not null &&
                         name.Equals("AllSense.exe", StringComparison.OrdinalIgnoreCase) &&
                         a.TryGetProperty("browser_download_url", out var ue))
-                        return new UpdateInfo(version, ue.GetString()!);
+                    {
+                        var urlValue = ue.GetString();
+                        if (string.IsNullOrWhiteSpace(urlValue)) return null;
+
+                        // Integrity: hash SHA-256 harus dipublikasikan di release body
+                        // (baris "sha256:<64 hex>"). Tanpa hash → update ditolak.
+                        var body = root.TryGetProperty("body", out var be) ? be.GetString() : null;
+                        var hash = ExtractSha256(body);
+                        if (hash is null) return null; // tolak update tanpa checksum
+                        return new UpdateInfo(version, urlValue, hash);
+                    }
                 }
             }
             return null;
         }
         catch { return null; }
+    }
+
+    private static string? ExtractSha256(string? body)
+    {
+        if (string.IsNullOrWhiteSpace(body)) return null;
+        foreach (var line in body.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            var s = line.Trim();
+            if (s.StartsWith("sha256:", StringComparison.OrdinalIgnoreCase))
+            {
+                var hex = s.AsSpan(7).Trim().ToString();
+                if (hex.Length == 64 && hex.All(Uri.IsHexDigit)) return hex.ToLowerInvariant();
+            }
+        }
+        // alternatif: hex 64字符 berdiri sendiri dengan prefix "SHA256 " atau di code fence
+        foreach (var line in body.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            var s = line.Trim().Trim('`');
+            if (s.Length == 64 && s.All(Uri.IsHexDigit)) return s.ToLowerInvariant();
+        }
+        return null;
     }
 
     public static bool IsNewer(string latestVersion)
@@ -63,7 +95,7 @@ public static class Updater
     }
 
     /// <summary>Unduh exe baru ke folder update. Return path jika berhasil.</summary>
-    public static async Task<string?> DownloadAsync(string url, string version, Action<int>? progress)
+    public static async Task<string?> DownloadAsync(string url, string version, string expectedSha256, Action<int>? progress)
     {
         try
         {
@@ -75,24 +107,45 @@ public static class Updater
             if (!resp.IsSuccessStatusCode) return null;
             var total = resp.Content.Headers.ContentLength ?? -1;
             await using var src = await resp.Content.ReadAsStreamAsync();
-            await using var fs = File.Create(dest);
-
             var buf = new byte[81920];
             long read = 0;
             int n;
-            while ((n = await src.ReadAsync(buf)) > 0)
+            await using (var fs = File.Create(dest))
             {
-                await fs.WriteAsync(buf.AsMemory(0, n));
-                read += n;
-                if (total > 0) progress?.Invoke((int)Math.Min(100, read * 100 / total));
+                while ((n = await src.ReadAsync(buf)) > 0)
+                {
+                    await fs.WriteAsync(buf.AsMemory(0, n));
+                    read += n;
+                    if (total > 0) progress?.Invoke((int)Math.Min(100, read * 100 / total));
+                }
             }
-            // Tolak unduhan yang mencurigakan (0 byte / terlalu kecil / bukan PE) agar
-            // exe yang sehat tidak pernah digantikan file korup.
-            fs.Position = 0;
-            var hdr = new byte[2];
-            if (fs.Read(hdr, 0, 2) != 2 || hdr[0] != (byte)'M' || hdr[1] != (byte)'Z')
+
+            // Validasi setelah file ditutup. Tolak & hapus unduhan yang mencurigakan
+            // (0 byte / terlalu kecil / bukan PE / checksum salah) agar exe yang sehat
+            // tidak pernah digantikan file korup, dan tidak ada sampah basi tertinggal.
+            bool Ok()
+            {
+                try
+                {
+                    using var check = File.OpenRead(dest);
+                    if (check.Length <= 200_000) return false;
+                    var hdr = new byte[2];
+                    if (check.Read(hdr, 0, 2) != 2 || hdr[0] != (byte)'M' || hdr[1] != (byte)'Z')
+                        return false;
+                    check.Position = 0;
+                    using var sha = SHA256.Create();
+                    var actual = Convert.ToHexString(sha.ComputeHash(check)).ToLowerInvariant();
+                    return string.Equals(actual, expectedSha256, StringComparison.OrdinalIgnoreCase);
+                }
+                catch { return false; }
+            }
+
+            if (!Ok())
+            {
+                try { File.Delete(dest); } catch { }
                 return null;
-            return fs.Length > 200_000 ? dest : null;
+            }
+            return dest;
         }
         catch { return null; }
     }
@@ -113,7 +166,7 @@ public static class Updater
                 CreateNoWindow = true,
             };
             psi.Environment[App.SmokeEnv] = "1";
-            var p = Process.Start(psi);
+            using var p = Process.Start(psi);
             if (p is null) return false;
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
             try { await p.WaitForExitAsync(cts.Token); }
@@ -154,13 +207,21 @@ public static class Updater
         var script = Path.Combine(dir, "apply-update.cmd");
         var backup = Path.Combine(dir, "AllSense.previous.exe");
 
+        // Escape metacharacter cmd: gandakan '%' agar %VAR% di dalam path tidak
+        // diekspansi cmd (path berisi '&'/'|'/'<'/'>' aman karena di-quote).
+        static string Esc(string s) => s.Replace("%", "%%");
+        var src = Esc(downloadedExe);
+        var dst = Esc(app);
+        var bak = Esc(backup);
+        var scr = Esc(script);
+
         // backup sebelum timpa; tulis ke DST%.new (volume sama dgn DST) lalu
         // rename (atomic). Jika gagal menulis di folder instal, exit tanpa timpa.
         File.WriteAllText(script,
             "@echo off\r\n" +
-            "set \"SRC=" + downloadedExe + "\"\r\n" +
-            "set \"DST=" + app + "\"\r\n" +
-            "set \"BAK=" + backup + "\"\r\n" +
+            "set \"SRC=" + src + "\"\r\n" +
+            "set \"DST=" + dst + "\"\r\n" +
+            "set \"BAK=" + bak + "\"\r\n" +
             ":wait\r\n" +
             "tasklist /FI \"IMAGENAME eq AllSense.exe\" | find /I \"AllSense.exe\" >nul && (\r\n" +
             "  ping -n 2 127.0.0.1 >nul\r\n" +
@@ -173,7 +234,7 @@ public static class Updater
             "if errorlevel 1 exit /b 1\r\n" +
             "del /q \"%SRC%\"\r\n" +
             "start \"\" \"%DST%\"\r\n" +
-            "del /q \"" + script + "\"\r\n");
+            "del /q \"" + scr + "\"\r\n");
         return script;
     }
 }

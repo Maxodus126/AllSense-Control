@@ -32,7 +32,16 @@ public sealed class UserSettings
 
     public void Save()
     {
-        try { File.WriteAllText(Path, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true })); }
+        try
+        {
+            var dir = System.IO.Path.GetDirectoryName(Path);
+            if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+            var tmp = Path + ".tmp";
+            File.WriteAllText(tmp, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
+            // File.Move(overwrite) = atomic pada NTFS: config tak pernah setengah tertulis
+            // walaupun proses mati di tengah write.
+            File.Move(tmp, Path, overwrite: true);
+        }
         catch { }
     }
 }

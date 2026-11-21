@@ -16,6 +16,27 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # Installer menyematkan hasil PUBLISH, bukan hasil build biasa.
+      # Publish dulu, baru build Installer — kalau tidak, EmbeddedResource
+      # dilewati (Condition=Exists) dan installer jadi payload-less.
+      # Publish ke output DEFAULT (bukan -o publish/app): Installer.csproj
+      # meng-hardcode PayloadPath di bin/Release/.../publish/AllSense.exe, jadi
+      # output harus mendarat di sana agar GuardEmbeddedPayload & verifikasi lolos.
+      - name: Publish AllSense.App (single-file, payload installer)
+        run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release --nologo
+
+      - name: Publish Uninstall (payload installer)
+        run: dotnet publish app/Uninstall/Uninstall.csproj -c Release --nologo
+
+      - name: Verify embedded payloads
+        shell: pwsh
+        run: |
+          $main = 'app/AllSense.App/bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/AllSense.exe'
+          $unin = 'app/Uninstall/bin/Release/net10.0-windows/win-x64/publish/Uninstall.exe'
+          foreach ($f in @($main, $unin)) {
+            if (-not (Test-Path $f)) { throw "Payload installer hilang: $f" }
+          }
+
       - name: Build AllSense.App
         run: dotnet build app/AllSense.App/AllSense.App.csproj -c Release --nologo
 
@@ -25,11 +46,8 @@ jobs:
       - name: Build Installer
         run: dotnet build app/Installer/Installer.csproj -c Release --nologo
 
-      - name: Publish AllSense.App (single-file)
-        run: dotnet publish app/AllSense.App/AllSense.App.csproj -c Release -o publish/app --nologo
-
       - name: Upload AllSense artifact
         uses: actions/upload-artifact@v4
         with:
           name: AllSense-win-x64
-          path: publish/app/AllSense.exe
+          path: app/AllSense.App/bin/Release/net10.0-windows10.0.19041.0/win-x64/publish/AllSense.exe

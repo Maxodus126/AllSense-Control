@@ -22,6 +22,10 @@
          butuh data budaya nyata; mode invariant → CultureNotFoundException → window tak pernah muncul.
          Wajib false, biarpun exe lebih besar (~+30MB ICU). -->
     <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- WFO0003: analyzer WinForms menyarankan buang dpiAware dari manifest. Untuk WPF,
+         deklarasi PerMonitorV2 di app.manifest adalah cara resmi (ApplicationHighDpiMode
+         hanya berlaku untuk WinForms). Manifest yang dipakai bersama tetap dibiarkan. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
 
