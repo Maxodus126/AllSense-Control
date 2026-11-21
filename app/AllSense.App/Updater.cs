@@ -17,7 +17,7 @@ public sealed record UpdateInfo(string Version, string Url, string Sha256);
 /// </summary>
 public static class Updater
 {
-    public const string CurrentVersion = "2.0.0";
+    public const string CurrentVersion = "2.0.1";
     private const string Repo = "Maxodus126/AllSense-Control";
     private const string LatestUrl = $"https://api.github.com/repos/{Repo}/releases/latest";
 
