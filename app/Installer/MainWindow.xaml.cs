@@ -165,7 +165,7 @@ public partial class MainWindow : Window
             using var key = Registry.CurrentUser.CreateSubKey(
                 @"Software\Microsoft\Windows\CurrentVersion\Uninstall\AllSense Control");
             key?.SetValue("DisplayName", "AllSense Control");
-            key?.SetValue("DisplayVersion", "2.0.1");
+            key?.SetValue("DisplayVersion", "2.1.0");
             key?.SetValue("Publisher", "Maxodus");
             key?.SetValue("DisplayIcon", target + ",0");
             key?.SetValue("UninstallString", "\"" + uninstTarget + "\"");
